@@ -1,0 +1,15 @@
+<package>
+  <description brief="Message definitions for communications with PIXHAWK hardware and software">
+
+     This package contains message definitions for communications with the PIXHAWK hardware and software.
+
+  </description>
+  <author>Lionel Heng</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/px_comm</url>
+  <export>
+    <cpp cflags="-I${prefix}/include -I${prefix}/msg/cpp"/>
+  </export>
+
+</package>
