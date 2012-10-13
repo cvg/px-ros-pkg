@@ -4,11 +4,6 @@
 
 \b px4flow_node
 
-<!-- 
-Provide an overview of your package.
--->
-
--->
-
+This package provides a ROS interface to the PX4Flow optical flow board.
 
 */
