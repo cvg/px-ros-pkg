@@ -21,6 +21,7 @@ include_directories(
 )
 
 set(PX4FLOW_NODE_SRCS
+  src/SerialComm.cc
   src/px4flow_node.cc
 )
 
