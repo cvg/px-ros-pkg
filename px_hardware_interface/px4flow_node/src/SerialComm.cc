@@ -83,7 +83,7 @@ SerialComm::open(const std::string& portStr, int baudrate)
     m_imagePub = it.advertise("camera_image", 5);
 
     // set up thread to asynchronously read data from serial port
-    readStart(1, 1000);
+    readStart(1000);
     m_uartThread = boost::thread(boost::bind(&boost::asio::io_service::run, &m_uartService));
 
     ros::Timer syncTimer = nh.createTimer(ros::Duration(2.0), boost::bind(&SerialComm::syncCallback, this, _1));
@@ -118,7 +118,7 @@ SerialComm::readCallback(const boost::system::error_code& error, size_t bytesTra
             if (m_timeout)
             {
                 m_timeout = false;
-                readStart(1, 1000);
+                readStart(1000);
 
                 return;
             }
@@ -128,7 +128,7 @@ SerialComm::readCallback(const boost::system::error_code& error, size_t bytesTra
 
         if (m_errorCount < 10)
         {
-            readStart(1, 1000);
+            readStart(1000);
         }
         else
         {
@@ -146,103 +146,105 @@ SerialComm::readCallback(const boost::system::error_code& error, size_t bytesTra
     mavlink_message_t message;
     mavlink_status_t status;
 
-    bool msgReceived = mavlink_parse_char(MAVLINK_COMM_1, m_buffer[0], &message, &status);
+    for (size_t i = 0; i < bytesTransferred; i++) {
+        bool msgReceived = mavlink_parse_char(MAVLINK_COMM_1, m_buffer[i], &message, &status);
 
-    if (msgReceived)
-    {
-        m_systemId = message.sysid;
-
-        switch (message.msgid)
+        if (msgReceived)
         {
-        case MAVLINK_MSG_ID_OPTICAL_FLOW:
-        {
-            // decode message
-            mavlink_optical_flow_t flow;
-            mavlink_msg_optical_flow_decode(&message, &flow);
+            m_systemId = message.sysid;
 
-            px_comm::OpticalFlow optFlowMsg;
-
-            optFlowMsg.header.stamp = ros::Time(flow.time_usec / 1000000, flow.time_usec % 1000000);
-            optFlowMsg.ground_distance = flow.ground_distance;
-            optFlowMsg.flow_x = flow.flow_x;
-            optFlowMsg.flow_y = flow.flow_y;
-            optFlowMsg.velocity_x = flow.flow_comp_m_x;
-            optFlowMsg.velocity_y = flow.flow_comp_m_y;
-            optFlowMsg.quality = flow.quality;
-
-            m_optFlowPub.publish(optFlowMsg);
-
-            break;
-        }
-        case MAVLINK_MSG_ID_DATA_TRANSMISSION_HANDSHAKE:
-        {
-            mavlink_data_transmission_handshake_t handshake;
-            mavlink_msg_data_transmission_handshake_decode(&message, &handshake);
-
-            m_imageSize = handshake.size;
-            m_imagePackets = handshake.packets;
-            m_imagePayload = handshake.payload;
-            m_imageWidth = handshake.width;
-            m_imageHeight = handshake.height;
-
-            if (m_imageBuffer.size() < m_imageSize)
+            switch (message.msgid)
             {
-                m_imageBuffer.resize(m_imageSize);
-            }
-
-            break;
-        }
-        case MAVLINK_MSG_ID_ENCAPSULATED_DATA:
-        {
-            if (m_imageSize == 0 || m_imagePackets == 0)
+            case MAVLINK_MSG_ID_OPTICAL_FLOW:
             {
+                // decode message
+                mavlink_optical_flow_t flow;
+                mavlink_msg_optical_flow_decode(&message, &flow);
+
+                px_comm::OpticalFlow optFlowMsg;
+
+                optFlowMsg.header.stamp = ros::Time(flow.time_usec / 1000000, flow.time_usec % 1000000);
+                optFlowMsg.ground_distance = flow.ground_distance;
+                optFlowMsg.flow_x = flow.flow_x;
+                optFlowMsg.flow_y = flow.flow_y;
+                optFlowMsg.velocity_x = flow.flow_comp_m_x;
+                optFlowMsg.velocity_y = flow.flow_comp_m_y;
+                optFlowMsg.quality = flow.quality;
+
+                m_optFlowPub.publish(optFlowMsg);
+
                 break;
             }
-
-            mavlink_encapsulated_data_t img;
-            mavlink_msg_encapsulated_data_decode(&message, &img);
-            size_t seq = img.seqnr;
-            size_t pos = seq * m_imagePayload;
-
-            if (seq + 1 > m_imagePackets)
+            case MAVLINK_MSG_ID_DATA_TRANSMISSION_HANDSHAKE:
             {
+                mavlink_data_transmission_handshake_t handshake;
+                mavlink_msg_data_transmission_handshake_decode(&message, &handshake);
+
+                m_imageSize = handshake.size;
+                m_imagePackets = handshake.packets;
+                m_imagePayload = handshake.payload;
+                m_imageWidth = handshake.width;
+                m_imageHeight = handshake.height;
+
+                if (m_imageBuffer.size() < m_imageSize)
+                {
+                    m_imageBuffer.resize(m_imageSize);
+                }
+
                 break;
             }
-
-            size_t bytesToCopy = m_imagePayload;
-            if (pos + m_imagePayload >= m_imageSize)
+            case MAVLINK_MSG_ID_ENCAPSULATED_DATA:
             {
-                 bytesToCopy = m_imageSize - pos;
+                if (m_imageSize == 0 || m_imagePackets == 0)
+                {
+                    break;
+                }
+
+                mavlink_encapsulated_data_t img;
+                mavlink_msg_encapsulated_data_decode(&message, &img);
+                size_t seq = img.seqnr;
+                size_t pos = seq * m_imagePayload;
+
+                if (seq + 1 > m_imagePackets)
+                {
+                    break;
+                }
+
+                size_t bytesToCopy = m_imagePayload;
+                if (pos + m_imagePayload >= m_imageSize)
+                {
+                     bytesToCopy = m_imageSize - pos;
+                }
+
+                memcpy(&m_imageBuffer[pos], img.data, bytesToCopy);
+
+                if (seq + 1 == m_imagePackets)
+                {
+                    sensor_msgs::Image image;
+                    image.height = m_imageHeight;
+                    image.width = m_imageWidth;
+                    image.encoding = sensor_msgs::image_encodings::MONO8;
+                    image.is_bigendian = false;
+                    image.step = m_imageWidth;
+
+                    image.data.resize(m_imageSize);
+                    memcpy(&image.data[0], &m_imageBuffer[0], m_imageSize);
+
+                    m_imagePub.publish(image);
+                }
+                break;
             }
-
-            memcpy(&m_imageBuffer[pos], img.data, bytesToCopy);
-
-            if (seq + 1 == m_imagePackets)
-            {
-                sensor_msgs::Image image;
-                image.height = m_imageHeight;
-                image.width = m_imageWidth;
-                image.encoding = sensor_msgs::image_encodings::MONO8;
-                image.is_bigendian = false;
-                image.step = m_imageWidth;
-
-                image.data.resize(m_imageSize);
-                memcpy(&image.data[0], &m_imageBuffer[0], m_imageSize);
-
-                m_imagePub.publish(image);
             }
-            break;
-        }
         }
     }
 
-    readStart(1, 1000);
+    readStart(1000);
 }
 
 void
-SerialComm::readStart(uint32_t length, uint32_t timeout_ms)
+SerialComm::readStart(uint32_t timeout_ms)
 {
-    boost::asio::async_read(m_port, boost::asio::buffer(m_buffer, length),
+    m_port.async_read_some(boost::asio::buffer(m_buffer, sizeof(m_buffer)),
                             boost::bind(&SerialComm::readCallback, this, boost::asio::placeholders::error,
                                         boost::asio::placeholders::bytes_transferred));
 
