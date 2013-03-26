@@ -22,7 +22,7 @@ public:
 
 private:
     void readCallback(const boost::system::error_code& error, size_t bytesTransferred);
-    void readStart(uint32_t length, uint32_t timeout_ms);
+    void readStart(uint32_t timeout_ms);
     void syncCallback(const ros::TimerEvent& timerEvent);
     void timeoutCallback(const boost::system::error_code& error);
 
