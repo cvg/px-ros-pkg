@@ -14,7 +14,7 @@ namespace px
 class SerialComm
 {
 public:
-    SerialComm();
+    SerialComm(const std::string& frameId);
     ~SerialComm();
 
     bool open(const std::string& portStr, int baudrate);
@@ -45,6 +45,7 @@ private:
 
     ros::Publisher m_optFlowPub;
     image_transport::Publisher m_imagePub;
+    std::string m_frameId;
 
     bool m_timeout;
     int m_errorCount;
