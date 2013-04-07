@@ -10,7 +10,7 @@
 namespace px
 {
 
-SerialComm::SerialComm()
+SerialComm::SerialComm(const std::string& frameId)
  : m_port(m_uartService)
  , m_timer(m_uartService)
  , m_imageSize(0)
@@ -20,6 +20,7 @@ SerialComm::SerialComm()
  , m_imageHeight(0)
  , m_systemId(-1)
  , m_compId(0)
+ , m_frameId(frameId)
  , m_timeout(false)
  , m_errorCount(0)
  , m_connected(false)
@@ -164,6 +165,7 @@ SerialComm::readCallback(const boost::system::error_code& error, size_t bytesTra
                 px_comm::OpticalFlow optFlowMsg;
 
                 optFlowMsg.header.stamp = ros::Time(flow.time_usec / 1000000, flow.time_usec % 1000000);
+                optFlowMsg.header.frame_id = m_frameId;
                 optFlowMsg.ground_distance = flow.ground_distance;
                 optFlowMsg.flow_x = flow.flow_x;
                 optFlowMsg.flow_y = flow.flow_y;
@@ -221,6 +223,7 @@ SerialComm::readCallback(const boost::system::error_code& error, size_t bytesTra
                 if (seq + 1 == m_imagePackets)
                 {
                     sensor_msgs::Image image;
+                    image.header.frame_id = m_frameId;
                     image.height = m_imageHeight;
                     image.width = m_imageWidth;
                     image.encoding = sensor_msgs::image_encodings::MONO8;
