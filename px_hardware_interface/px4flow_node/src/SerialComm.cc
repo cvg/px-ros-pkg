@@ -164,7 +164,7 @@ SerialComm::readCallback(const boost::system::error_code& error, size_t bytesTra
 
                 px_comm::OpticalFlow optFlowMsg;
 
-                optFlowMsg.header.stamp = ros::Time(flow.time_usec / 1000000, flow.time_usec % 1000000);
+                optFlowMsg.header.stamp = ros::Time(flow.time_usec / 1000000, (flow.time_usec % 1000000) * 1000);
                 optFlowMsg.header.frame_id = m_frameId;
                 optFlowMsg.ground_distance = flow.ground_distance;
                 optFlowMsg.flow_x = flow.flow_x;
