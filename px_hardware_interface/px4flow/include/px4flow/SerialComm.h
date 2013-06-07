@@ -14,7 +14,7 @@ namespace px
 class SerialComm
 {
 public:
-    SerialComm();
+    SerialComm(const std::string& frameId);
     ~SerialComm();
 
     bool open(const std::string& portStr, int baudrate);
@@ -22,7 +22,7 @@ public:
 
 private:
     void readCallback(const boost::system::error_code& error, size_t bytesTransferred);
-    void readStart(uint32_t length, uint32_t timeout_ms);
+    void readStart(uint32_t timeout_ms);
     void syncCallback(const ros::TimerEvent& timerEvent);
     void timeoutCallback(const boost::system::error_code& error);
 
@@ -45,6 +45,7 @@ private:
 
     ros::Publisher m_optFlowPub;
     image_transport::Publisher m_imagePub;
+    std::string m_frameId;
 
     bool m_timeout;
     int m_errorCount;

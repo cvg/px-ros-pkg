@@ -41,7 +41,10 @@ main(int argc, char** argv)
     int baudrate;
     pnh.param("baudrate", baudrate, 115200);
 
-    px::SerialComm comm;
+    std::string frameId;
+    pnh.param("frame_id", frameId, std::string("/px4flow"));
+
+    px::SerialComm comm(frameId);
     if (!comm.open(portStr, baudrate))
     {
         return -1;
