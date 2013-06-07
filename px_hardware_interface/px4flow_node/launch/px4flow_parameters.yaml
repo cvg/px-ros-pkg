@@ -1,2 +1,2 @@
 serial_port: /dev/ttyUSB0
-baudrate:    921600
+baudrate:    115200
