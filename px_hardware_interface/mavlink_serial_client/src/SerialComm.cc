@@ -172,6 +172,10 @@ SerialComm::readCallback(const boost::system::error_code& error, size_t bytesTra
 
             switch (message.msgid)
             {
+            /**
+             * Message specs
+             * https://pixhawk.ethz.ch/mavlink/#ATTITUDE
+             */
             case MAVLINK_MSG_ID_ATTITUDE:
             {
                 if (m_imuPub.getNumSubscribers() > 0)
@@ -283,9 +287,8 @@ SerialComm::readCallback(const boost::system::error_code& error, size_t bytesTra
                 }
                 break;
             }
-
             /*
-             * Message specs (xxx: soon mavlink.org):
+             * Message specs
              * https://pixhawk.ethz.ch/mavlink/#HIGHRES_IMU
              */
             case MAVLINK_MSG_ID_HIGHRES_IMU:
