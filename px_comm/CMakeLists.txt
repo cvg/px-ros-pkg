@@ -5,7 +5,7 @@ find_package(catkin REQUIRED COMPONENTS std_msgs message_generation)
 
 add_message_files(
   DIRECTORY msg
-  FILES OpticalFlow.msg
+  FILES Mavlink.msg OpticalFlow.msg
 )
 
 generate_messages(

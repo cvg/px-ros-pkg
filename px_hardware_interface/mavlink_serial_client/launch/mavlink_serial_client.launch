@@ -1,0 +1,5 @@
+<launch>
+    <node name="mavlink" pkg="mavlink_serial_client" type="mavlink_serial_client" output="screen" respawn="true" clear_params="true">
+        <rosparam file="$(find mavlink_serial_client)/launch/mavlink_serial_client_parameters.yaml"/>
+    </node>
+</launch>
