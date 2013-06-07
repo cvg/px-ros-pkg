@@ -1,9 +1,0 @@
-/**
-\mainpage
-\htmlinclude manifest.html
-
-\b px4flow_node
-
-This package provides a ROS interface to the PX4Flow optical flow board.
-
-*/

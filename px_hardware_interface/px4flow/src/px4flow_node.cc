@@ -1,6 +1,6 @@
 #include <ros/ros.h>
 
-#include "px4flow_node/SerialComm.h"
+#include "px4flow/SerialComm.h"
 
 void
 printTopicInfo(void)
@@ -39,7 +39,7 @@ main(int argc, char** argv)
     pnh.param("serial_port", portStr, std::string("/dev/ttyUSB0"));
 
     int baudrate;
-    pnh.param("baudrate", baudrate, 921600);
+    pnh.param("baudrate", baudrate, 115200);
 
     px::SerialComm comm;
     if (!comm.open(portStr, baudrate))

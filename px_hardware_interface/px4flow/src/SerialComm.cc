@@ -5,7 +5,7 @@
 #include <sensor_msgs/image_encodings.h>
 #include <sensor_msgs/Image.h>
 
-#include "px4flow_node/SerialComm.h"
+#include "px4flow/SerialComm.h"
 
 namespace px
 {

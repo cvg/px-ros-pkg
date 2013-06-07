@@ -1,9 +1,0 @@
-<stack>
-  <description brief="px-ros-pkg">A repository containing drivers for PIXHAWK hardware, and software for MAV autonomy.</description>
-  <author>Maintained by Lionel Heng</author>
-  <license>BSD</license>  
-  <review status="unreviewed" notes=""/>
-  <url>http://ros.org/wiki/px-ros-pkg</url>
-  <depend stack="ros" />
-  <depend stack="ros_comm" /> <!-- roscpp -->
-</stack>
