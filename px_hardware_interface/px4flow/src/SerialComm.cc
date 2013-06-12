@@ -87,7 +87,7 @@ SerialComm::open(const std::string& portStr, int baudrate)
     readStart(1000);
     m_uartThread = boost::thread(boost::bind(&boost::asio::io_service::run, &m_uartService));
 
-    ros::Timer syncTimer = nh.createTimer(ros::Duration(2.0), boost::bind(&SerialComm::syncCallback, this, _1));
+    m_syncTimer = nh.createTimer(ros::Duration(2.0), boost::bind(&SerialComm::syncCallback, this, _1));
 
     m_connected = true;
 

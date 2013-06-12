@@ -47,6 +47,8 @@ private:
     image_transport::Publisher m_imagePub;
     std::string m_frameId;
 
+    ros::Timer m_syncTimer;
+
     bool m_timeout;
     int m_errorCount;
 
