@@ -4,12 +4,8 @@
 
 typedef struct __mavlink_cmd_airspeed_chng_t
 {
- float spCmd; ///< 
-                
-            
- uint8_t target; ///< 
-                
-            
+ float spCmd; ///< commanded airspeed
+ uint8_t target; ///< Target ID
 } mavlink_cmd_airspeed_chng_t;
 
 #define MAVLINK_MSG_ID_CMD_AIRSPEED_CHNG_LEN 5
@@ -32,12 +28,8 @@ typedef struct __mavlink_cmd_airspeed_chng_t
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param target 
-                
-            
- * @param spCmd 
-                
-            
+ * @param target Target ID
+ * @param spCmd commanded airspeed
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_cmd_airspeed_chng_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
@@ -67,12 +59,8 @@ static inline uint16_t mavlink_msg_cmd_airspeed_chng_pack(uint8_t system_id, uin
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message was sent over
  * @param msg The MAVLink message to compress the data into
- * @param target 
-                
-            
- * @param spCmd 
-                
-            
+ * @param target Target ID
+ * @param spCmd commanded airspeed
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_cmd_airspeed_chng_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
@@ -114,12 +102,8 @@ static inline uint16_t mavlink_msg_cmd_airspeed_chng_encode(uint8_t system_id, u
  * @brief Send a cmd_airspeed_chng message
  * @param chan MAVLink channel to send the message
  *
- * @param target 
-                
-            
- * @param spCmd 
-                
-            
+ * @param target Target ID
+ * @param spCmd commanded airspeed
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
@@ -148,9 +132,7 @@ static inline void mavlink_msg_cmd_airspeed_chng_send(mavlink_channel_t chan, ui
 /**
  * @brief Get field target from cmd_airspeed_chng message
  *
- * @return 
-                
-            
+ * @return Target ID
  */
 static inline uint8_t mavlink_msg_cmd_airspeed_chng_get_target(const mavlink_message_t* msg)
 {
@@ -160,9 +142,7 @@ static inline uint8_t mavlink_msg_cmd_airspeed_chng_get_target(const mavlink_mes
 /**
  * @brief Get field spCmd from cmd_airspeed_chng message
  *
- * @return 
-                
-            
+ * @return commanded airspeed
  */
 static inline float mavlink_msg_cmd_airspeed_chng_get_spCmd(const mavlink_message_t* msg)
 {

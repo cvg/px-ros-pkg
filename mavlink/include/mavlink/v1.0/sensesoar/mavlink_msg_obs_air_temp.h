@@ -4,9 +4,7 @@
 
 typedef struct __mavlink_obs_air_temp_t
 {
- float airT; ///< 
-                
-            
+ float airT; ///< Air Temperatur
 } mavlink_obs_air_temp_t;
 
 #define MAVLINK_MSG_ID_OBS_AIR_TEMP_LEN 4
@@ -28,9 +26,7 @@ typedef struct __mavlink_obs_air_temp_t
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param airT 
-                
-            
+ * @param airT Air Temperatur
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_obs_air_temp_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
@@ -58,9 +54,7 @@ static inline uint16_t mavlink_msg_obs_air_temp_pack(uint8_t system_id, uint8_t 
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message was sent over
  * @param msg The MAVLink message to compress the data into
- * @param airT 
-                
-            
+ * @param airT Air Temperatur
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_obs_air_temp_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
@@ -100,9 +94,7 @@ static inline uint16_t mavlink_msg_obs_air_temp_encode(uint8_t system_id, uint8_
  * @brief Send a obs_air_temp message
  * @param chan MAVLink channel to send the message
  *
- * @param airT 
-                
-            
+ * @param airT Air Temperatur
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
@@ -129,9 +121,7 @@ static inline void mavlink_msg_obs_air_temp_send(mavlink_channel_t chan, float a
 /**
  * @brief Get field airT from obs_air_temp message
  *
- * @return 
-                
-            
+ * @return Air Temperatur
  */
 static inline float mavlink_msg_obs_air_temp_get_airT(const mavlink_message_t* msg)
 {

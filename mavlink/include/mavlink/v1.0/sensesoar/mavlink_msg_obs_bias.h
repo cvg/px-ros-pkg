@@ -4,12 +4,8 @@
 
 typedef struct __mavlink_obs_bias_t
 {
- float accBias[3]; ///< 
-                
-            
- float gyroBias[3]; ///< 
-                
-            
+ float accBias[3]; ///< accelerometer bias
+ float gyroBias[3]; ///< gyroscope bias
 } mavlink_obs_bias_t;
 
 #define MAVLINK_MSG_ID_OBS_BIAS_LEN 24
@@ -33,12 +29,8 @@ typedef struct __mavlink_obs_bias_t
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param accBias 
-                
-            
- * @param gyroBias 
-                
-            
+ * @param accBias accelerometer bias
+ * @param gyroBias gyroscope bias
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_obs_bias_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
@@ -68,12 +60,8 @@ static inline uint16_t mavlink_msg_obs_bias_pack(uint8_t system_id, uint8_t comp
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message was sent over
  * @param msg The MAVLink message to compress the data into
- * @param accBias 
-                
-            
- * @param gyroBias 
-                
-            
+ * @param accBias accelerometer bias
+ * @param gyroBias gyroscope bias
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_obs_bias_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
@@ -115,12 +103,8 @@ static inline uint16_t mavlink_msg_obs_bias_encode(uint8_t system_id, uint8_t co
  * @brief Send a obs_bias message
  * @param chan MAVLink channel to send the message
  *
- * @param accBias 
-                
-            
- * @param gyroBias 
-                
-            
+ * @param accBias accelerometer bias
+ * @param gyroBias gyroscope bias
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
@@ -149,9 +133,7 @@ static inline void mavlink_msg_obs_bias_send(mavlink_channel_t chan, const float
 /**
  * @brief Get field accBias from obs_bias message
  *
- * @return 
-                
-            
+ * @return accelerometer bias
  */
 static inline uint16_t mavlink_msg_obs_bias_get_accBias(const mavlink_message_t* msg, float *accBias)
 {
@@ -161,9 +143,7 @@ static inline uint16_t mavlink_msg_obs_bias_get_accBias(const mavlink_message_t*
 /**
  * @brief Get field gyroBias from obs_bias message
  *
- * @return 
-                
-            
+ * @return gyroscope bias
  */
 static inline uint16_t mavlink_msg_obs_bias_get_gyroBias(const mavlink_message_t* msg, float *gyroBias)
 {

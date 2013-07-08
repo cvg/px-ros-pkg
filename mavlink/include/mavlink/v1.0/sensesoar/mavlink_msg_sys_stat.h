@@ -4,18 +4,10 @@
 
 typedef struct __mavlink_sys_stat_t
 {
- uint8_t gps; ///< 
-                
-            
- uint8_t act; ///< 
-                
-            
- uint8_t mod; ///< 
-                
-            
- uint8_t commRssi; ///< 
-                
-            
+ uint8_t gps; ///< gps status
+ uint8_t act; ///< actuator status
+ uint8_t mod; ///< module status
+ uint8_t commRssi; ///< module status
 } mavlink_sys_stat_t;
 
 #define MAVLINK_MSG_ID_SYS_Stat_LEN 4
@@ -40,18 +32,10 @@ typedef struct __mavlink_sys_stat_t
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param gps 
-                
-            
- * @param act 
-                
-            
- * @param mod 
-                
-            
- * @param commRssi 
-                
-            
+ * @param gps gps status
+ * @param act actuator status
+ * @param mod module status
+ * @param commRssi module status
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_sys_stat_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
@@ -85,18 +69,10 @@ static inline uint16_t mavlink_msg_sys_stat_pack(uint8_t system_id, uint8_t comp
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message was sent over
  * @param msg The MAVLink message to compress the data into
- * @param gps 
-                
-            
- * @param act 
-                
-            
- * @param mod 
-                
-            
- * @param commRssi 
-                
-            
+ * @param gps gps status
+ * @param act actuator status
+ * @param mod module status
+ * @param commRssi module status
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_sys_stat_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
@@ -142,18 +118,10 @@ static inline uint16_t mavlink_msg_sys_stat_encode(uint8_t system_id, uint8_t co
  * @brief Send a sys_stat message
  * @param chan MAVLink channel to send the message
  *
- * @param gps 
-                
-            
- * @param act 
-                
-            
- * @param mod 
-                
-            
- * @param commRssi 
-                
-            
+ * @param gps gps status
+ * @param act actuator status
+ * @param mod module status
+ * @param commRssi module status
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
@@ -186,9 +154,7 @@ static inline void mavlink_msg_sys_stat_send(mavlink_channel_t chan, uint8_t gps
 /**
  * @brief Get field gps from sys_stat message
  *
- * @return 
-                
-            
+ * @return gps status
  */
 static inline uint8_t mavlink_msg_sys_stat_get_gps(const mavlink_message_t* msg)
 {
@@ -198,9 +164,7 @@ static inline uint8_t mavlink_msg_sys_stat_get_gps(const mavlink_message_t* msg)
 /**
  * @brief Get field act from sys_stat message
  *
- * @return 
-                
-            
+ * @return actuator status
  */
 static inline uint8_t mavlink_msg_sys_stat_get_act(const mavlink_message_t* msg)
 {
@@ -210,9 +174,7 @@ static inline uint8_t mavlink_msg_sys_stat_get_act(const mavlink_message_t* msg)
 /**
  * @brief Get field mod from sys_stat message
  *
- * @return 
-                
-            
+ * @return module status
  */
 static inline uint8_t mavlink_msg_sys_stat_get_mod(const mavlink_message_t* msg)
 {
@@ -222,9 +184,7 @@ static inline uint8_t mavlink_msg_sys_stat_get_mod(const mavlink_message_t* msg)
 /**
  * @brief Get field commRssi from sys_stat message
  *
- * @return 
-                
-            
+ * @return module status
  */
 static inline uint8_t mavlink_msg_sys_stat_get_commRssi(const mavlink_message_t* msg)
 {
