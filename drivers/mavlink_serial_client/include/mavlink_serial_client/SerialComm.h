@@ -53,6 +53,7 @@ private:
     ros::Publisher m_magPub;
     ros::Publisher m_mavlinkPub;
     ros::Publisher m_optFlowPub;
+    ros::Publisher m_viconPub;
 
     mavlink_highres_imu_t m_imuRaw;
 
