@@ -29,6 +29,7 @@ if(DEFINED ENV{NDDSHOME})
 
   include_directories(
     include
+    include/px_comm
     ${NDDSHOME}/include
     ${NDDSHOME}/include/ndds
   )
