@@ -1,0 +1,19 @@
+// mirrors sensor_msgs/Image in ROS
+
+module px_comm
+{
+
+struct DDSImage {
+    unsigned long seq;
+    long stamp_sec;
+    long stamp_nsec;
+    string frame_id;
+    unsigned long height;
+    unsigned long width;
+    string encoding;
+    char is_bigendian;
+    unsigned long step;
+    sequence<char,1251936> data; 
+};
+
+};

@@ -19,5 +19,25 @@ generate_messages(
 )
 
 catkin_package(
-   CATKIN_DEPENDS message_runtime
+  INCLUDE_DIRS include
+  LIBRARIES px_comm_dds
+  CATKIN_DEPENDS message_runtime
 )
+
+if(DEFINED ENV{NDDSHOME})
+  set(NDDSHOME $ENV{NDDSHOME})
+
+  include_directories(
+    include
+    ${NDDSHOME}/include
+    ${NDDSHOME}/include/ndds
+  )
+
+  add_definitions(-DRTI_UNIX)
+
+  add_library(px_comm_dds
+    dds_msg/DDSImage.cxx
+    dds_msg/DDSImagePlugin.cxx
+    dds_msg/DDSImageSupport.cxx
+  )
+endif()
