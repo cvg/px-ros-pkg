@@ -38,18 +38,20 @@
 
 #include "DDSImage.h"
 
-/* ========================================================================= */
-const char *px_comm_DDSImageTYPENAME = "px_comm::DDSImage";
 
-DDS_TypeCode* px_comm_DDSImage_get_typecode()
+namespace px_comm{
+/* ========================================================================= */
+const char *DDSImageTYPENAME = "px_comm::DDSImage";
+
+DDS_TypeCode* DDSImage_get_typecode()
 {
     static RTIBool is_initialized = RTI_FALSE;
 
-    static DDS_TypeCode px_comm_DDSImage_g_tc_frame_id_string = DDS_INITIALIZE_STRING_TYPECODE(255);
-    static DDS_TypeCode px_comm_DDSImage_g_tc_encoding_string = DDS_INITIALIZE_STRING_TYPECODE(255);
-    static DDS_TypeCode px_comm_DDSImage_g_tc_data_sequence = DDS_INITIALIZE_SEQUENCE_TYPECODE(1251936,NULL);
+    static DDS_TypeCode DDSImage_g_tc_frame_id_string = DDS_INITIALIZE_STRING_TYPECODE(255);
+    static DDS_TypeCode DDSImage_g_tc_encoding_string = DDS_INITIALIZE_STRING_TYPECODE(255);
+    static DDS_TypeCode DDSImage_g_tc_data_sequence = DDS_INITIALIZE_SEQUENCE_TYPECODE(1251936,NULL);
 
-    static DDS_TypeCode_Member px_comm_DDSImage_g_tc_members[10]=
+    static DDS_TypeCode_Member DDSImage_g_tc_members[10]=
     {
         {
             (char *)"seq",/* Member name */
@@ -223,7 +225,7 @@ DDS_TypeCode* px_comm_DDSImage_get_typecode()
         }
     };
 
-    static DDS_TypeCode px_comm_DDSImage_g_tc =
+    static DDS_TypeCode DDSImage_g_tc =
     {{
         DDS_TK_STRUCT,/* Kind */
         DDS_BOOLEAN_FALSE, /* Ignored */
@@ -234,40 +236,40 @@ DDS_TypeCode* px_comm_DDSImage_get_typecode()
         0, /* Ignored */
         NULL, /* Ignored */
         10, /* Number of members */
-        px_comm_DDSImage_g_tc_members, /* Members */
+        DDSImage_g_tc_members, /* Members */
         DDS_VM_NONE /* Ignored */
-    }}; /* Type code for px_comm_DDSImage*/
+    }}; /* Type code for DDSImage*/
 
     if (is_initialized) {
-        return &px_comm_DDSImage_g_tc;
+        return &DDSImage_g_tc;
     }
 
-    px_comm_DDSImage_g_tc_data_sequence._data._typeCode = (RTICdrTypeCode *)&DDS_g_tc_char;
+    DDSImage_g_tc_data_sequence._data._typeCode = (RTICdrTypeCode *)&DDS_g_tc_char;
 
-    px_comm_DDSImage_g_tc_members[0]._representation._typeCode = (RTICdrTypeCode *)&DDS_g_tc_ulong;
-    px_comm_DDSImage_g_tc_members[1]._representation._typeCode = (RTICdrTypeCode *)&DDS_g_tc_long;
-    px_comm_DDSImage_g_tc_members[2]._representation._typeCode = (RTICdrTypeCode *)&DDS_g_tc_long;
-    px_comm_DDSImage_g_tc_members[3]._representation._typeCode = (RTICdrTypeCode *)&px_comm_DDSImage_g_tc_frame_id_string;
-    px_comm_DDSImage_g_tc_members[4]._representation._typeCode = (RTICdrTypeCode *)&DDS_g_tc_ulong;
-    px_comm_DDSImage_g_tc_members[5]._representation._typeCode = (RTICdrTypeCode *)&DDS_g_tc_ulong;
-    px_comm_DDSImage_g_tc_members[6]._representation._typeCode = (RTICdrTypeCode *)&px_comm_DDSImage_g_tc_encoding_string;
-    px_comm_DDSImage_g_tc_members[7]._representation._typeCode = (RTICdrTypeCode *)&DDS_g_tc_char;
-    px_comm_DDSImage_g_tc_members[8]._representation._typeCode = (RTICdrTypeCode *)&DDS_g_tc_ulong;
-    px_comm_DDSImage_g_tc_members[9]._representation._typeCode = (RTICdrTypeCode *)&px_comm_DDSImage_g_tc_data_sequence;
+    DDSImage_g_tc_members[0]._representation._typeCode = (RTICdrTypeCode *)&DDS_g_tc_ulong;
+    DDSImage_g_tc_members[1]._representation._typeCode = (RTICdrTypeCode *)&DDS_g_tc_long;
+    DDSImage_g_tc_members[2]._representation._typeCode = (RTICdrTypeCode *)&DDS_g_tc_long;
+    DDSImage_g_tc_members[3]._representation._typeCode = (RTICdrTypeCode *)&DDSImage_g_tc_frame_id_string;
+    DDSImage_g_tc_members[4]._representation._typeCode = (RTICdrTypeCode *)&DDS_g_tc_ulong;
+    DDSImage_g_tc_members[5]._representation._typeCode = (RTICdrTypeCode *)&DDS_g_tc_ulong;
+    DDSImage_g_tc_members[6]._representation._typeCode = (RTICdrTypeCode *)&DDSImage_g_tc_encoding_string;
+    DDSImage_g_tc_members[7]._representation._typeCode = (RTICdrTypeCode *)&DDS_g_tc_char;
+    DDSImage_g_tc_members[8]._representation._typeCode = (RTICdrTypeCode *)&DDS_g_tc_ulong;
+    DDSImage_g_tc_members[9]._representation._typeCode = (RTICdrTypeCode *)&DDSImage_g_tc_data_sequence;
 
     is_initialized = RTI_TRUE;
 
-    return &px_comm_DDSImage_g_tc;
+    return &DDSImage_g_tc;
 }
 
 
-RTIBool px_comm_DDSImage_initialize(
-    px_comm_DDSImage* sample) {
-  return px_comm_DDSImage_initialize_ex(sample,RTI_TRUE,RTI_TRUE);
+RTIBool DDSImage_initialize(
+    DDSImage* sample) {
+  return ::px_comm::DDSImage_initialize_ex(sample,RTI_TRUE,RTI_TRUE);
 }
         
-RTIBool px_comm_DDSImage_initialize_ex(
-    px_comm_DDSImage* sample,RTIBool allocatePointers,RTIBool allocateMemory)
+RTIBool DDSImage_initialize_ex(
+    DDSImage* sample,RTIBool allocatePointers,RTIBool allocateMemory)
 {
 
     void* buffer = NULL;
@@ -351,14 +353,14 @@ RTIBool px_comm_DDSImage_initialize_ex(
     return RTI_TRUE;
 }
 
-void px_comm_DDSImage_finalize(
-    px_comm_DDSImage* sample)
+void DDSImage_finalize(
+    DDSImage* sample)
 {
-    px_comm_DDSImage_finalize_ex(sample,RTI_TRUE);
+    ::px_comm::DDSImage_finalize_ex(sample,RTI_TRUE);
 }
         
-void px_comm_DDSImage_finalize_ex(
-    px_comm_DDSImage* sample,RTIBool deletePointers)
+void DDSImage_finalize_ex(
+    DDSImage* sample,RTIBool deletePointers)
 {        
     if (sample) { } /* To avoid warnings */
     if (deletePointers) {} /* To avoid warnings */
@@ -382,9 +384,9 @@ void px_comm_DDSImage_finalize_ex(
 
 }
 
-RTIBool px_comm_DDSImage_copy(
-    px_comm_DDSImage* dst,
-    const px_comm_DDSImage* src)
+RTIBool DDSImage_copy(
+    DDSImage* dst,
+    const DDSImage* src)
 {        
 
     if (!RTICdrType_copyUnsignedLong(
@@ -457,13 +459,13 @@ RTIBool px_comm_DDSImage_copy(
  *
  * Defines:  TSeq, T
  *
- * Configure and implement 'px_comm_DDSImage' sequence class.
+ * Configure and implement 'DDSImage' sequence class.
  */
-#define T px_comm_DDSImage
-#define TSeq px_comm_DDSImageSeq
-#define T_initialize_ex px_comm_DDSImage_initialize_ex
-#define T_finalize_ex   px_comm_DDSImage_finalize_ex
-#define T_copy       px_comm_DDSImage_copy
+#define T DDSImage
+#define TSeq DDSImageSeq
+#define T_initialize_ex ::px_comm::DDSImage_initialize_ex
+#define T_finalize_ex   ::px_comm::DDSImage_finalize_ex
+#define T_copy       ::px_comm::DDSImage_copy
 
 #ifndef NDDS_STANDALONE_TYPE
 #include "dds_c/generic/dds_c_sequence_TSeq.gen"
@@ -483,3 +485,5 @@ RTIBool px_comm_DDSImage_copy(
 #undef TSeq
 #undef T
 
+
+} /* namespace px_comm */

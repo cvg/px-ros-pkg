@@ -57,23 +57,25 @@
 #include "DDSImagePlugin.h"
 
 
+namespace px_comm{
+
 /* --------------------------------------------------------------------------------------
- *  Type px_comm_DDSImage
+ *  Type DDSImage
  * -------------------------------------------------------------------------------------- */
 
 /* --------------------------------------------------------------------------------------
     Support functions:
  * -------------------------------------------------------------------------------------- */
 
-px_comm_DDSImage *
-px_comm_DDSImagePluginSupport_create_data_ex(RTIBool allocate_pointers){
-    px_comm_DDSImage *sample = NULL;
+DDSImage *
+DDSImagePluginSupport_create_data_ex(RTIBool allocate_pointers){
+    DDSImage *sample = NULL;
 
     RTIOsapiHeap_allocateStructure(
-        &sample, px_comm_DDSImage);
+        &sample, DDSImage);
 
     if(sample != NULL) {
-        if (!px_comm_DDSImage_initialize_ex(sample,allocate_pointers, RTI_TRUE)) {
+        if (!::px_comm::DDSImage_initialize_ex(sample,allocate_pointers, RTI_TRUE)) {
             RTIOsapiHeap_freeStructure(sample);
             return NULL;
         }
@@ -82,44 +84,44 @@ px_comm_DDSImagePluginSupport_create_data_ex(RTIBool allocate_pointers){
 }
 
 
-px_comm_DDSImage *
-px_comm_DDSImagePluginSupport_create_data(void)
+DDSImage *
+DDSImagePluginSupport_create_data(void)
 {
-    return px_comm_DDSImagePluginSupport_create_data_ex(RTI_TRUE);
+    return ::px_comm::DDSImagePluginSupport_create_data_ex(RTI_TRUE);
 }
 
 
 void 
-px_comm_DDSImagePluginSupport_destroy_data_ex(
-    px_comm_DDSImage *sample,RTIBool deallocate_pointers) {
+DDSImagePluginSupport_destroy_data_ex(
+    DDSImage *sample,RTIBool deallocate_pointers) {
 
-    px_comm_DDSImage_finalize_ex(sample,deallocate_pointers);
+    ::px_comm::DDSImage_finalize_ex(sample,deallocate_pointers);
 
     RTIOsapiHeap_freeStructure(sample);
 }
 
 
 void 
-px_comm_DDSImagePluginSupport_destroy_data(
-    px_comm_DDSImage *sample) {
+DDSImagePluginSupport_destroy_data(
+    DDSImage *sample) {
 
-    px_comm_DDSImagePluginSupport_destroy_data_ex(sample,RTI_TRUE);
+    ::px_comm::DDSImagePluginSupport_destroy_data_ex(sample,RTI_TRUE);
 
 }
 
 
 RTIBool 
-px_comm_DDSImagePluginSupport_copy_data(
-    px_comm_DDSImage *dst,
-    const px_comm_DDSImage *src)
+DDSImagePluginSupport_copy_data(
+    DDSImage *dst,
+    const DDSImage *src)
 {
-    return px_comm_DDSImage_copy(dst,src);
+    return ::px_comm::DDSImage_copy(dst,src);
 }
 
 
 void 
-px_comm_DDSImagePluginSupport_print_data(
-    const px_comm_DDSImage *sample,
+DDSImagePluginSupport_print_data(
+    const DDSImage *sample,
     const char *desc,
     unsigned int indent_level)
 {
@@ -219,7 +221,7 @@ px_comm_DDSImagePluginSupport_print_data(
 
 
 PRESTypePluginParticipantData 
-px_comm_DDSImagePlugin_on_participant_attached(
+DDSImagePlugin_on_participant_attached(
     void *registration_data,
     const struct PRESTypePluginParticipantInfo *participant_info,
     RTIBool top_level_registration,
@@ -238,7 +240,7 @@ px_comm_DDSImagePlugin_on_participant_attached(
 
 
 void 
-px_comm_DDSImagePlugin_on_participant_detached(
+DDSImagePlugin_on_participant_detached(
     PRESTypePluginParticipantData participant_data)
 {
 
@@ -247,7 +249,7 @@ px_comm_DDSImagePlugin_on_participant_detached(
 
 
 PRESTypePluginEndpointData
-px_comm_DDSImagePlugin_on_endpoint_attached(
+DDSImagePlugin_on_endpoint_attached(
     PRESTypePluginParticipantData participant_data,
     const struct PRESTypePluginEndpointInfo *endpoint_info,
     RTIBool top_level_registration, 
@@ -264,9 +266,9 @@ px_comm_DDSImagePlugin_on_endpoint_attached(
             participant_data,
             endpoint_info,
             (PRESTypePluginDefaultEndpointDataCreateSampleFunction)
-            px_comm_DDSImagePluginSupport_create_data,
+            ::px_comm::DDSImagePluginSupport_create_data,
             (PRESTypePluginDefaultEndpointDataDestroySampleFunction)
-            px_comm_DDSImagePluginSupport_destroy_data,
+            ::px_comm::DDSImagePluginSupport_destroy_data,
             NULL, NULL);
 
     if (epd == NULL) {
@@ -276,7 +278,7 @@ px_comm_DDSImagePlugin_on_endpoint_attached(
     
 
     if (endpoint_info->endpointKind == PRES_TYPEPLUGIN_ENDPOINT_WRITER) {
-        serializedSampleMaxSize = px_comm_DDSImagePlugin_get_serialized_sample_max_size(
+        serializedSampleMaxSize = ::px_comm::DDSImagePlugin_get_serialized_sample_max_size(
             epd,RTI_FALSE,RTI_CDR_ENCAPSULATION_ID_CDR_BE,0);
             
         PRESTypePluginDefaultEndpointData_setMaxSizeSerializedSample(epd, serializedSampleMaxSize);
@@ -285,9 +287,9 @@ px_comm_DDSImagePlugin_on_endpoint_attached(
                 epd,
                 endpoint_info,
             (PRESTypePluginGetSerializedSampleMaxSizeFunction)
-                px_comm_DDSImagePlugin_get_serialized_sample_max_size, epd,
+                ::px_comm::DDSImagePlugin_get_serialized_sample_max_size, epd,
             (PRESTypePluginGetSerializedSampleSizeFunction)
-            px_comm_DDSImagePlugin_get_serialized_sample_size,
+            ::px_comm::DDSImagePlugin_get_serialized_sample_size,
             epd) == RTI_FALSE) {
             PRESTypePluginDefaultEndpointData_delete(epd);
             return NULL;
@@ -301,7 +303,7 @@ px_comm_DDSImagePlugin_on_endpoint_attached(
 
 
 void 
-px_comm_DDSImagePlugin_on_endpoint_detached(
+DDSImagePlugin_on_endpoint_detached(
     PRESTypePluginEndpointData endpoint_data)
 {  
 
@@ -311,13 +313,13 @@ px_comm_DDSImagePlugin_on_endpoint_detached(
 
 
 RTIBool 
-px_comm_DDSImagePlugin_copy_sample(
+DDSImagePlugin_copy_sample(
     PRESTypePluginEndpointData endpoint_data,
-    px_comm_DDSImage *dst,
-    const px_comm_DDSImage *src)
+    DDSImage *dst,
+    const DDSImage *src)
 {
     if (endpoint_data) {} /* To avoid warnings */
-    return px_comm_DDSImagePluginSupport_copy_data(dst,src);
+    return ::px_comm::DDSImagePluginSupport_copy_data(dst,src);
 }
 
 /* --------------------------------------------------------------------------------------
@@ -325,7 +327,7 @@ px_comm_DDSImagePlugin_copy_sample(
  * -------------------------------------------------------------------------------------- */
 
 unsigned int 
-px_comm_DDSImagePlugin_get_serialized_sample_max_size(
+DDSImagePlugin_get_serialized_sample_max_size(
     PRESTypePluginEndpointData endpoint_data,
     RTIBool include_encapsulation,
     RTIEncapsulationId encapsulation_id,
@@ -333,9 +335,9 @@ px_comm_DDSImagePlugin_get_serialized_sample_max_size(
 
 
 RTIBool 
-px_comm_DDSImagePlugin_serialize(
+DDSImagePlugin_serialize(
     PRESTypePluginEndpointData endpoint_data,
-    const px_comm_DDSImage *sample, 
+    const DDSImage *sample, 
     struct RTICdrStream *stream,    
     RTIBool serialize_encapsulation,
     RTIEncapsulationId encapsulation_id,
@@ -450,9 +452,9 @@ px_comm_DDSImagePlugin_serialize(
 
 
 RTIBool 
-px_comm_DDSImagePlugin_deserialize_sample(
+DDSImagePlugin_deserialize_sample(
     PRESTypePluginEndpointData endpoint_data,
-    px_comm_DDSImage *sample,
+    DDSImage *sample,
     struct RTICdrStream *stream,   
     RTIBool deserialize_encapsulation,
     RTIBool deserialize_sample, 
@@ -478,7 +480,7 @@ px_comm_DDSImagePlugin_deserialize_sample(
     
     
     if(deserialize_sample) {
-        px_comm_DDSImage_initialize_ex(sample, RTI_FALSE, RTI_FALSE);
+        ::px_comm::DDSImage_initialize_ex(sample, RTI_FALSE, RTI_FALSE);
     
     if (!RTICdrStream_deserializeUnsignedLong(
         stream, &sample->seq)) {
@@ -575,9 +577,9 @@ fin:
  
 
 RTIBool 
-px_comm_DDSImagePlugin_deserialize(
+DDSImagePlugin_deserialize(
     PRESTypePluginEndpointData endpoint_data,
-    px_comm_DDSImage **sample,
+    DDSImage **sample,
     RTIBool * drop_sample,
     struct RTICdrStream *stream,   
     RTIBool deserialize_encapsulation,
@@ -587,7 +589,7 @@ px_comm_DDSImagePlugin_deserialize(
 
     if (drop_sample) {} /* To avoid warnings */
 
-    return px_comm_DDSImagePlugin_deserialize_sample( 
+    return ::px_comm::DDSImagePlugin_deserialize_sample( 
         endpoint_data, (sample != NULL)?*sample:NULL,
         stream, deserialize_encapsulation, deserialize_sample, 
         endpoint_plugin_qos);
@@ -597,7 +599,7 @@ px_comm_DDSImagePlugin_deserialize(
 
 
 
-RTIBool px_comm_DDSImagePlugin_skip(
+RTIBool DDSImagePlugin_skip(
     PRESTypePluginEndpointData endpoint_data,
     struct RTICdrStream *stream,   
     RTIBool skip_encapsulation,
@@ -701,7 +703,7 @@ fin:
 
 
 unsigned int 
-px_comm_DDSImagePlugin_get_serialized_sample_max_size(
+DDSImagePlugin_get_serialized_sample_max_size(
     PRESTypePluginEndpointData endpoint_data,
     RTIBool include_encapsulation,
     RTIEncapsulationId encapsulation_id,
@@ -778,7 +780,7 @@ px_comm_DDSImagePlugin_get_serialized_sample_max_size(
 
 
 unsigned int 
-px_comm_DDSImagePlugin_get_serialized_sample_min_size(
+DDSImagePlugin_get_serialized_sample_min_size(
     PRESTypePluginEndpointData endpoint_data,
     RTIBool include_encapsulation,
     RTIEncapsulationId encapsulation_id,
@@ -861,12 +863,12 @@ px_comm_DDSImagePlugin_get_serialized_sample_min_size(
  * encapsulation flags.
  */
 unsigned int
-px_comm_DDSImagePlugin_get_serialized_sample_size(
+DDSImagePlugin_get_serialized_sample_size(
     PRESTypePluginEndpointData endpoint_data,
     RTIBool include_encapsulation,
     RTIEncapsulationId encapsulation_id,
     unsigned int current_alignment,
-    const px_comm_DDSImage * sample) 
+    const DDSImage * sample) 
 {
 
     unsigned int initial_alignment = current_alignment;
@@ -952,7 +954,7 @@ px_comm_DDSImagePlugin_get_serialized_sample_size(
 
 
 PRESTypePluginKeyKind 
-px_comm_DDSImagePlugin_get_key_kind(void)
+DDSImagePlugin_get_key_kind(void)
 {
 
     return PRES_TYPEPLUGIN_NO_KEY;
@@ -961,9 +963,9 @@ px_comm_DDSImagePlugin_get_key_kind(void)
 
 
 RTIBool 
-px_comm_DDSImagePlugin_serialize_key(
+DDSImagePlugin_serialize_key(
     PRESTypePluginEndpointData endpoint_data,
-    const px_comm_DDSImage *sample, 
+    const DDSImage *sample, 
     struct RTICdrStream *stream,    
     RTIBool serialize_encapsulation,
     RTIEncapsulationId encapsulation_id,
@@ -989,7 +991,7 @@ px_comm_DDSImagePlugin_serialize_key(
 
     if(serialize_key) {
 
-        if (!px_comm_DDSImagePlugin_serialize(
+        if (!::px_comm::DDSImagePlugin_serialize(
                 endpoint_data,
                 sample,
                 stream,
@@ -1011,9 +1013,9 @@ px_comm_DDSImagePlugin_serialize_key(
 }
 
 
-RTIBool px_comm_DDSImagePlugin_deserialize_key_sample(
+RTIBool DDSImagePlugin_deserialize_key_sample(
     PRESTypePluginEndpointData endpoint_data,
-    px_comm_DDSImage *sample, 
+    DDSImage *sample, 
     struct RTICdrStream *stream,
     RTIBool deserialize_encapsulation,
     RTIBool deserialize_key,
@@ -1038,7 +1040,7 @@ RTIBool px_comm_DDSImagePlugin_deserialize_key_sample(
 
     if (deserialize_key) {
 
-        if (!px_comm_DDSImagePlugin_deserialize_sample(
+        if (!::px_comm::DDSImagePlugin_deserialize_sample(
                 endpoint_data, sample, stream,
                 RTI_FALSE, RTI_TRUE, 
                 endpoint_plugin_qos)) {
@@ -1058,9 +1060,9 @@ RTIBool px_comm_DDSImagePlugin_deserialize_key_sample(
 
 
  
-RTIBool px_comm_DDSImagePlugin_deserialize_key(
+RTIBool DDSImagePlugin_deserialize_key(
     PRESTypePluginEndpointData endpoint_data,
-    px_comm_DDSImage **sample, 
+    DDSImage **sample, 
     RTIBool * drop_sample,
     struct RTICdrStream *stream,
     RTIBool deserialize_encapsulation,
@@ -1068,7 +1070,7 @@ RTIBool px_comm_DDSImagePlugin_deserialize_key(
     void *endpoint_plugin_qos)
 {
     if (drop_sample) {} /* To avoid warnings */
-    return px_comm_DDSImagePlugin_deserialize_key_sample(
+    return ::px_comm::DDSImagePlugin_deserialize_key_sample(
         endpoint_data, (sample != NULL)?*sample:NULL, stream,
         deserialize_encapsulation, deserialize_key, endpoint_plugin_qos);
 }
@@ -1076,7 +1078,7 @@ RTIBool px_comm_DDSImagePlugin_deserialize_key(
 
 
 unsigned int
-px_comm_DDSImagePlugin_get_serialized_key_max_size(
+DDSImagePlugin_get_serialized_key_max_size(
     PRESTypePluginEndpointData endpoint_data,
     RTIBool include_encapsulation,
     RTIEncapsulationId encapsulation_id,
@@ -1106,7 +1108,7 @@ px_comm_DDSImagePlugin_get_serialized_key_max_size(
     }
         
 
-    current_alignment += px_comm_DDSImagePlugin_get_serialized_sample_max_size(
+    current_alignment += ::px_comm::DDSImagePlugin_get_serialized_sample_max_size(
         endpoint_data,RTI_FALSE, encapsulation_id, current_alignment);
     
     if (include_encapsulation) {
@@ -1118,9 +1120,9 @@ px_comm_DDSImagePlugin_get_serialized_key_max_size(
 
 
 RTIBool 
-px_comm_DDSImagePlugin_serialized_sample_to_key(
+DDSImagePlugin_serialized_sample_to_key(
     PRESTypePluginEndpointData endpoint_data,
-    px_comm_DDSImage *sample,
+    DDSImage *sample,
     struct RTICdrStream *stream, 
     RTIBool deserialize_encapsulation,  
     RTIBool deserialize_key, 
@@ -1144,7 +1146,7 @@ px_comm_DDSImagePlugin_serialized_sample_to_key(
 
     if (deserialize_key) {
 
-        if (!px_comm_DDSImagePlugin_deserialize_sample(
+        if (!::px_comm::DDSImagePlugin_deserialize_sample(
             endpoint_data, sample, stream, RTI_FALSE, 
             RTI_TRUE, endpoint_plugin_qos)) {
             return RTI_FALSE;
@@ -1174,7 +1176,7 @@ fin:
  * Plug-in Installation Methods
  * ------------------------------------------------------------------------ */
  
-struct PRESTypePlugin *px_comm_DDSImagePlugin_new(void) 
+struct PRESTypePlugin *DDSImagePlugin_new(void) 
 { 
     struct PRESTypePlugin *plugin = NULL;
     const struct PRESTypePluginVersion PLUGIN_VERSION = 
@@ -1191,51 +1193,51 @@ struct PRESTypePlugin *px_comm_DDSImagePlugin_new(void)
     /* set up parent's function pointers */
     plugin->onParticipantAttached =
         (PRESTypePluginOnParticipantAttachedCallback)
-        px_comm_DDSImagePlugin_on_participant_attached;
+        ::px_comm::DDSImagePlugin_on_participant_attached;
     plugin->onParticipantDetached =
         (PRESTypePluginOnParticipantDetachedCallback)
-        px_comm_DDSImagePlugin_on_participant_detached;
+        ::px_comm::DDSImagePlugin_on_participant_detached;
     plugin->onEndpointAttached =
         (PRESTypePluginOnEndpointAttachedCallback)
-        px_comm_DDSImagePlugin_on_endpoint_attached;
+        ::px_comm::DDSImagePlugin_on_endpoint_attached;
     plugin->onEndpointDetached =
         (PRESTypePluginOnEndpointDetachedCallback)
-        px_comm_DDSImagePlugin_on_endpoint_detached;
+        ::px_comm::DDSImagePlugin_on_endpoint_detached;
 
     plugin->copySampleFnc =
         (PRESTypePluginCopySampleFunction)
-        px_comm_DDSImagePlugin_copy_sample;
+        ::px_comm::DDSImagePlugin_copy_sample;
     plugin->createSampleFnc =
         (PRESTypePluginCreateSampleFunction)
-        px_comm_DDSImagePlugin_create_sample;
+        DDSImagePlugin_create_sample;
     plugin->destroySampleFnc =
         (PRESTypePluginDestroySampleFunction)
-        px_comm_DDSImagePlugin_destroy_sample;
+        DDSImagePlugin_destroy_sample;
 
     plugin->serializeFnc =
         (PRESTypePluginSerializeFunction)
-        px_comm_DDSImagePlugin_serialize;
+        ::px_comm::DDSImagePlugin_serialize;
     plugin->deserializeFnc =
         (PRESTypePluginDeserializeFunction)
-        px_comm_DDSImagePlugin_deserialize;
+        ::px_comm::DDSImagePlugin_deserialize;
     plugin->getSerializedSampleMaxSizeFnc =
         (PRESTypePluginGetSerializedSampleMaxSizeFunction)
-        px_comm_DDSImagePlugin_get_serialized_sample_max_size;
+        ::px_comm::DDSImagePlugin_get_serialized_sample_max_size;
     plugin->getSerializedSampleMinSizeFnc =
         (PRESTypePluginGetSerializedSampleMinSizeFunction)
-        px_comm_DDSImagePlugin_get_serialized_sample_min_size;
+        ::px_comm::DDSImagePlugin_get_serialized_sample_min_size;
 
 
     plugin->getSampleFnc =
         (PRESTypePluginGetSampleFunction)
-        px_comm_DDSImagePlugin_get_sample;
+        DDSImagePlugin_get_sample;
     plugin->returnSampleFnc =
         (PRESTypePluginReturnSampleFunction)
-        px_comm_DDSImagePlugin_return_sample;
+        DDSImagePlugin_return_sample;
 
     plugin->getKeyKindFnc =
         (PRESTypePluginGetKeyKindFunction)
-        px_comm_DDSImagePlugin_get_key_kind;
+        ::px_comm::DDSImagePlugin_get_key_kind;
 
  
     /* These functions are only used for keyed types. As this is not a keyed
@@ -1252,28 +1254,30 @@ struct PRESTypePlugin *px_comm_DDSImagePlugin_new(void)
     plugin->serializedSampleToKeyHashFnc = NULL;
     plugin->serializedKeyToKeyHashFnc = NULL;
     
-    plugin->typeCode =  (struct RTICdrTypeCode *)px_comm_DDSImage_get_typecode();
+    plugin->typeCode =  (struct RTICdrTypeCode *)::px_comm::DDSImage_get_typecode();
     
     plugin->languageKind = PRES_TYPEPLUGIN_DDS_TYPE; 
 
     /* Serialized buffer */
     plugin->getBuffer = 
         (PRESTypePluginGetBufferFunction)
-        px_comm_DDSImagePlugin_get_buffer;
+        DDSImagePlugin_get_buffer;
     plugin->returnBuffer = 
         (PRESTypePluginReturnBufferFunction)
-        px_comm_DDSImagePlugin_return_buffer;
+        DDSImagePlugin_return_buffer;
     plugin->getSerializedSampleSizeFnc =
         (PRESTypePluginGetSerializedSampleSizeFunction)
-        px_comm_DDSImagePlugin_get_serialized_sample_size;
+        ::px_comm::DDSImagePlugin_get_serialized_sample_size;
 
-    plugin->endpointTypeName = px_comm_DDSImageTYPENAME;
+    plugin->endpointTypeName = DDSImageTYPENAME;
 
     return plugin;
 }
 
 void
-px_comm_DDSImagePlugin_delete(struct PRESTypePlugin *plugin)
+DDSImagePlugin_delete(struct PRESTypePlugin *plugin)
 {
     RTIOsapiHeap_freeStructure(plugin);
 } 
+
+} /* namespace px_comm */

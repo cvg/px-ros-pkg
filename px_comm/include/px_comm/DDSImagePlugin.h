@@ -31,47 +31,45 @@ struct RTICdrStream;
 #endif
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+namespace px_comm{
 
 #define px_comm_DDSImage_LAST_MEMBER_ID 0
 
-#define px_comm_DDSImagePlugin_get_sample PRESTypePluginDefaultEndpointData_getSample 
-#define px_comm_DDSImagePlugin_return_sample PRESTypePluginDefaultEndpointData_returnSample 
-#define px_comm_DDSImagePlugin_get_buffer PRESTypePluginDefaultEndpointData_getBuffer 
-#define px_comm_DDSImagePlugin_return_buffer PRESTypePluginDefaultEndpointData_returnBuffer 
+#define DDSImagePlugin_get_sample PRESTypePluginDefaultEndpointData_getSample 
+#define DDSImagePlugin_return_sample PRESTypePluginDefaultEndpointData_returnSample 
+#define DDSImagePlugin_get_buffer PRESTypePluginDefaultEndpointData_getBuffer 
+#define DDSImagePlugin_return_buffer PRESTypePluginDefaultEndpointData_returnBuffer 
  
 
-#define px_comm_DDSImagePlugin_create_sample PRESTypePluginDefaultEndpointData_createSample 
-#define px_comm_DDSImagePlugin_destroy_sample PRESTypePluginDefaultEndpointData_deleteSample 
+#define DDSImagePlugin_create_sample PRESTypePluginDefaultEndpointData_createSample 
+#define DDSImagePlugin_destroy_sample PRESTypePluginDefaultEndpointData_deleteSample 
 
 /* --------------------------------------------------------------------------------------
     Support functions:
  * -------------------------------------------------------------------------------------- */
 
-NDDSUSERDllExport extern px_comm_DDSImage*
-px_comm_DDSImagePluginSupport_create_data_ex(RTIBool allocate_pointers);
+NDDSUSERDllExport extern DDSImage*
+DDSImagePluginSupport_create_data_ex(RTIBool allocate_pointers);
 
-NDDSUSERDllExport extern px_comm_DDSImage*
-px_comm_DDSImagePluginSupport_create_data(void);
+NDDSUSERDllExport extern DDSImage*
+DDSImagePluginSupport_create_data(void);
 
 NDDSUSERDllExport extern RTIBool 
-px_comm_DDSImagePluginSupport_copy_data(
-    px_comm_DDSImage *out,
-    const px_comm_DDSImage *in);
+DDSImagePluginSupport_copy_data(
+    DDSImage *out,
+    const DDSImage *in);
 
 NDDSUSERDllExport extern void 
-px_comm_DDSImagePluginSupport_destroy_data_ex(
-    px_comm_DDSImage *sample,RTIBool deallocate_pointers);
+DDSImagePluginSupport_destroy_data_ex(
+    DDSImage *sample,RTIBool deallocate_pointers);
 
 NDDSUSERDllExport extern void 
-px_comm_DDSImagePluginSupport_destroy_data(
-    px_comm_DDSImage *sample);
+DDSImagePluginSupport_destroy_data(
+    DDSImage *sample);
 
 NDDSUSERDllExport extern void 
-px_comm_DDSImagePluginSupport_print_data(
-    const px_comm_DDSImage *sample,
+DDSImagePluginSupport_print_data(
+    const DDSImage *sample,
     const char *desc,
     unsigned int indent);
 
@@ -81,7 +79,7 @@ px_comm_DDSImagePluginSupport_print_data(
  * ---------------------------------------------------------------------------- */
 
 NDDSUSERDllExport extern PRESTypePluginParticipantData 
-px_comm_DDSImagePlugin_on_participant_attached(
+DDSImagePlugin_on_participant_attached(
     void *registration_data, 
     const struct PRESTypePluginParticipantInfo *participant_info,
     RTIBool top_level_registration, 
@@ -89,35 +87,35 @@ px_comm_DDSImagePlugin_on_participant_attached(
     RTICdrTypeCode *typeCode);
 
 NDDSUSERDllExport extern void 
-px_comm_DDSImagePlugin_on_participant_detached(
+DDSImagePlugin_on_participant_detached(
     PRESTypePluginParticipantData participant_data);
     
 NDDSUSERDllExport extern PRESTypePluginEndpointData 
-px_comm_DDSImagePlugin_on_endpoint_attached(
+DDSImagePlugin_on_endpoint_attached(
     PRESTypePluginParticipantData participant_data,
     const struct PRESTypePluginEndpointInfo *endpoint_info,
     RTIBool top_level_registration, 
     void *container_plugin_context);
 
 NDDSUSERDllExport extern void 
-px_comm_DDSImagePlugin_on_endpoint_detached(
+DDSImagePlugin_on_endpoint_detached(
     PRESTypePluginEndpointData endpoint_data);
 
 
 NDDSUSERDllExport extern RTIBool 
-px_comm_DDSImagePlugin_copy_sample(
+DDSImagePlugin_copy_sample(
     PRESTypePluginEndpointData endpoint_data,
-    px_comm_DDSImage *out,
-    const px_comm_DDSImage *in);
+    DDSImage *out,
+    const DDSImage *in);
 
 /* --------------------------------------------------------------------------------------
     (De)Serialize functions:
  * -------------------------------------------------------------------------------------- */
 
 NDDSUSERDllExport extern RTIBool 
-px_comm_DDSImagePlugin_serialize(
+DDSImagePlugin_serialize(
     PRESTypePluginEndpointData endpoint_data,
-    const px_comm_DDSImage *sample,
+    const DDSImage *sample,
     struct RTICdrStream *stream, 
     RTIBool serialize_encapsulation,
     RTIEncapsulationId encapsulation_id,
@@ -125,9 +123,9 @@ px_comm_DDSImagePlugin_serialize(
     void *endpoint_plugin_qos);
 
 NDDSUSERDllExport extern RTIBool 
-px_comm_DDSImagePlugin_deserialize_sample(
+DDSImagePlugin_deserialize_sample(
     PRESTypePluginEndpointData endpoint_data,
-    px_comm_DDSImage *sample, 
+    DDSImage *sample, 
     struct RTICdrStream *stream,
     RTIBool deserialize_encapsulation,
     RTIBool deserialize_sample, 
@@ -135,9 +133,9 @@ px_comm_DDSImagePlugin_deserialize_sample(
 
  
 NDDSUSERDllExport extern RTIBool 
-px_comm_DDSImagePlugin_deserialize(
+DDSImagePlugin_deserialize(
     PRESTypePluginEndpointData endpoint_data,
-    px_comm_DDSImage **sample, 
+    DDSImage **sample, 
     RTIBool * drop_sample,
     struct RTICdrStream *stream,
     RTIBool deserialize_encapsulation,
@@ -148,7 +146,7 @@ px_comm_DDSImagePlugin_deserialize(
 
 
 NDDSUSERDllExport extern RTIBool
-px_comm_DDSImagePlugin_skip(
+DDSImagePlugin_skip(
     PRESTypePluginEndpointData endpoint_data,
     struct RTICdrStream *stream, 
     RTIBool skip_encapsulation,  
@@ -156,26 +154,26 @@ px_comm_DDSImagePlugin_skip(
     void *endpoint_plugin_qos);
 
 NDDSUSERDllExport extern unsigned int 
-px_comm_DDSImagePlugin_get_serialized_sample_max_size(
+DDSImagePlugin_get_serialized_sample_max_size(
     PRESTypePluginEndpointData endpoint_data,
     RTIBool include_encapsulation,
     RTIEncapsulationId encapsulation_id,
     unsigned int current_alignment);
 
 NDDSUSERDllExport extern unsigned int 
-px_comm_DDSImagePlugin_get_serialized_sample_min_size(
+DDSImagePlugin_get_serialized_sample_min_size(
     PRESTypePluginEndpointData endpoint_data,
     RTIBool include_encapsulation,
     RTIEncapsulationId encapsulation_id,
     unsigned int current_alignment);
 
 NDDSUSERDllExport extern unsigned int
-px_comm_DDSImagePlugin_get_serialized_sample_size(
+DDSImagePlugin_get_serialized_sample_size(
     PRESTypePluginEndpointData endpoint_data,
     RTIBool include_encapsulation,
     RTIEncapsulationId encapsulation_id,
     unsigned int current_alignment,
-    const px_comm_DDSImage * sample);
+    const DDSImage * sample);
 
 
 
@@ -184,19 +182,19 @@ px_comm_DDSImagePlugin_get_serialized_sample_size(
  * -------------------------------------------------------------------------------------- */
 
 NDDSUSERDllExport extern PRESTypePluginKeyKind 
-px_comm_DDSImagePlugin_get_key_kind(void);
+DDSImagePlugin_get_key_kind(void);
 
 NDDSUSERDllExport extern unsigned int 
-px_comm_DDSImagePlugin_get_serialized_key_max_size(
+DDSImagePlugin_get_serialized_key_max_size(
     PRESTypePluginEndpointData endpoint_data,
     RTIBool include_encapsulation,
     RTIEncapsulationId encapsulation_id,
     unsigned int current_alignment);
 
 NDDSUSERDllExport extern RTIBool 
-px_comm_DDSImagePlugin_serialize_key(
+DDSImagePlugin_serialize_key(
     PRESTypePluginEndpointData endpoint_data,
-    const px_comm_DDSImage *sample,
+    const DDSImage *sample,
     struct RTICdrStream *stream,
     RTIBool serialize_encapsulation,
     RTIEncapsulationId encapsulation_id,
@@ -204,9 +202,9 @@ px_comm_DDSImagePlugin_serialize_key(
     void *endpoint_plugin_qos);
 
 NDDSUSERDllExport extern RTIBool 
-px_comm_DDSImagePlugin_deserialize_key_sample(
+DDSImagePlugin_deserialize_key_sample(
     PRESTypePluginEndpointData endpoint_data,
-    px_comm_DDSImage * sample,
+    DDSImage * sample,
     struct RTICdrStream *stream,
     RTIBool deserialize_encapsulation,
     RTIBool deserialize_key,
@@ -214,9 +212,9 @@ px_comm_DDSImagePlugin_deserialize_key_sample(
 
  
 NDDSUSERDllExport extern RTIBool 
-px_comm_DDSImagePlugin_deserialize_key(
+DDSImagePlugin_deserialize_key(
     PRESTypePluginEndpointData endpoint_data,
-    px_comm_DDSImage ** sample,
+    DDSImage ** sample,
     RTIBool * drop_sample,
     struct RTICdrStream *stream,
     RTIBool deserialize_encapsulation,
@@ -225,9 +223,9 @@ px_comm_DDSImagePlugin_deserialize_key(
 
 
 NDDSUSERDllExport extern RTIBool
-px_comm_DDSImagePlugin_serialized_sample_to_key(
+DDSImagePlugin_serialized_sample_to_key(
     PRESTypePluginEndpointData endpoint_data,
-    px_comm_DDSImage *sample,
+    DDSImage *sample,
     struct RTICdrStream *stream, 
     RTIBool deserialize_encapsulation,  
     RTIBool deserialize_key, 
@@ -236,14 +234,12 @@ px_comm_DDSImagePlugin_serialized_sample_to_key(
      
 /* Plugin Functions */
 NDDSUSERDllExport extern struct PRESTypePlugin*
-px_comm_DDSImagePlugin_new(void);
+DDSImagePlugin_new(void);
 
 NDDSUSERDllExport extern void
-px_comm_DDSImagePlugin_delete(struct PRESTypePlugin *);
+DDSImagePlugin_delete(struct PRESTypePlugin *);
 
-#ifdef __cplusplus
-}
-#endif
+} /* namespace px_comm */
 
         
 #if (defined(RTI_WIN32) || defined (RTI_WINCE)) && defined(NDDS_USER_DLL_EXPORT)
