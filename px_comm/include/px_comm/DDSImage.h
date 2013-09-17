@@ -26,52 +26,68 @@
 #endif
 
 
-namespace px_comm{
+#ifdef __cplusplus
+extern "C" {
+#endif
 
         
-extern const char *DDSImageTYPENAME;
+extern const char *px_comm_DDSImageTYPENAME;
         
+
+#ifdef __cplusplus
+}
+#endif
 
 
 #ifdef __cplusplus
-    struct DDSImageSeq;
+    struct px_comm_DDSImageSeq;
 
 #ifndef NDDS_STANDALONE_TYPE
-    class DDSImageTypeSupport;
-    class DDSImageDataWriter;
-    class DDSImageDataReader;
+    class px_comm_DDSImageTypeSupport;
+    class px_comm_DDSImageDataWriter;
+    class px_comm_DDSImageDataReader;
 #endif
 
 #endif
 
             
     
-
-typedef struct DDSImage
+class px_comm_DDSImage                                        
 {
+public:            
 #ifdef __cplusplus
-    typedef struct DDSImageSeq Seq;
+    typedef struct px_comm_DDSImageSeq Seq;
 
 #ifndef NDDS_STANDALONE_TYPE
-    typedef DDSImageTypeSupport TypeSupport;
-    typedef DDSImageDataWriter DataWriter;
-    typedef DDSImageDataReader DataReader;
+    typedef px_comm_DDSImageTypeSupport TypeSupport;
+    typedef px_comm_DDSImageDataWriter DataWriter;
+    typedef px_comm_DDSImageDataReader DataReader;
 #endif
 
 #endif
-
+    
     DDS_UnsignedLong  seq;
+
     DDS_Long  stamp_sec;
+
     DDS_Long  stamp_nsec;
+
     char*  frame_id; /* maximum length = (255) */
+
     DDS_UnsignedLong  height;
+
     DDS_UnsignedLong  width;
+
     char*  encoding; /* maximum length = (255) */
+
     DDS_Char  is_bigendian;
+
     DDS_UnsignedLong  step;
+
      DDS_CharSeq  data;
 
-} DDSImage;
+            
+};                        
     
                             
 #if (defined(RTI_WIN32) || defined (RTI_WINCE)) && defined(NDDS_USER_DLL_EXPORT)
@@ -82,31 +98,31 @@ typedef struct DDSImage
 #endif
 
     
-NDDSUSERDllExport DDS_TypeCode* DDSImage_get_typecode(void); /* Type code */
+NDDSUSERDllExport DDS_TypeCode* px_comm_DDSImage_get_typecode(void); /* Type code */
     
 
-DDS_SEQUENCE(DDSImageSeq, DDSImage);
+DDS_SEQUENCE(px_comm_DDSImageSeq, px_comm_DDSImage);
         
 NDDSUSERDllExport
-RTIBool DDSImage_initialize(
-        DDSImage* self);
+RTIBool px_comm_DDSImage_initialize(
+        px_comm_DDSImage* self);
         
 NDDSUSERDllExport
-RTIBool DDSImage_initialize_ex(
-        DDSImage* self,RTIBool allocatePointers);
+RTIBool px_comm_DDSImage_initialize_ex(
+        px_comm_DDSImage* self,RTIBool allocatePointers,RTIBool allocateMemory);
 
 NDDSUSERDllExport
-void DDSImage_finalize(
-        DDSImage* self);
+void px_comm_DDSImage_finalize(
+        px_comm_DDSImage* self);
                         
 NDDSUSERDllExport
-void DDSImage_finalize_ex(
-        DDSImage* self,RTIBool deletePointers);
+void px_comm_DDSImage_finalize_ex(
+        px_comm_DDSImage* self,RTIBool deletePointers);
         
 NDDSUSERDllExport
-RTIBool DDSImage_copy(
-        DDSImage* dst,
-        const DDSImage* src);
+RTIBool px_comm_DDSImage_copy(
+        px_comm_DDSImage* dst,
+        const px_comm_DDSImage* src);
 
 #if (defined(RTI_WIN32) || defined (RTI_WINCE)) && defined(NDDS_USER_DLL_EXPORT)
   /* If the code is building on Windows, stop exporting symbols.
@@ -115,8 +131,6 @@ RTIBool DDSImage_copy(
   #define NDDSUSERDllExport
 #endif
 
-
-} /* namespace px_comm */
 
 
 #endif /* DDSImage_248003145_h */

@@ -36,6 +36,10 @@
   #include "cdr/cdr_type.h"
 #endif
 
+#ifndef cdr_type_object_h
+  #include "cdr/cdr_typeObject.h"
+#endif
+
 #ifndef cdr_encapsulation_h
   #include "cdr/cdr_encapsulation.h"
 #endif
@@ -53,71 +57,69 @@
 #include "DDSImagePlugin.h"
 
 
-namespace px_comm{
-
 /* --------------------------------------------------------------------------------------
- *  Type DDSImage
+ *  Type px_comm_DDSImage
  * -------------------------------------------------------------------------------------- */
 
 /* --------------------------------------------------------------------------------------
     Support functions:
  * -------------------------------------------------------------------------------------- */
 
-DDSImage *
-DDSImagePluginSupport_create_data_ex(RTIBool allocate_pointers){
-    DDSImage *sample = NULL;
+px_comm_DDSImage *
+px_comm_DDSImagePluginSupport_create_data_ex(RTIBool allocate_pointers){
+    px_comm_DDSImage *sample = NULL;
 
     RTIOsapiHeap_allocateStructure(
-        &sample, DDSImage);
+        &sample, px_comm_DDSImage);
 
     if(sample != NULL) {
-        if (!::px_comm::DDSImage_initialize_ex(sample,allocate_pointers)) {
-            RTIOsapiHeap_freeStructure(&sample);
+        if (!px_comm_DDSImage_initialize_ex(sample,allocate_pointers, RTI_TRUE)) {
+            RTIOsapiHeap_freeStructure(sample);
             return NULL;
         }
-    }
+    }        
     return sample; 
 }
 
 
-DDSImage *
-DDSImagePluginSupport_create_data(void)
+px_comm_DDSImage *
+px_comm_DDSImagePluginSupport_create_data(void)
 {
-    return ::px_comm::DDSImagePluginSupport_create_data_ex(RTI_TRUE);
+    return px_comm_DDSImagePluginSupport_create_data_ex(RTI_TRUE);
 }
 
 
 void 
-DDSImagePluginSupport_destroy_data_ex(
-    DDSImage *sample,RTIBool deallocate_pointers) {
+px_comm_DDSImagePluginSupport_destroy_data_ex(
+    px_comm_DDSImage *sample,RTIBool deallocate_pointers) {
 
-    ::px_comm::DDSImage_finalize_ex(sample,deallocate_pointers);
+    px_comm_DDSImage_finalize_ex(sample,deallocate_pointers);
 
     RTIOsapiHeap_freeStructure(sample);
 }
 
 
 void 
-DDSImagePluginSupport_destroy_data(
-    DDSImage *sample) {
+px_comm_DDSImagePluginSupport_destroy_data(
+    px_comm_DDSImage *sample) {
 
-    ::px_comm::DDSImagePluginSupport_destroy_data_ex(sample,RTI_TRUE);
+    px_comm_DDSImagePluginSupport_destroy_data_ex(sample,RTI_TRUE);
 
 }
 
 
 RTIBool 
-DDSImagePluginSupport_copy_data(
-    DDSImage *dst,
-    const DDSImage *src)
+px_comm_DDSImagePluginSupport_copy_data(
+    px_comm_DDSImage *dst,
+    const px_comm_DDSImage *src)
 {
-    return ::px_comm::DDSImage_copy(dst,src);
+    return px_comm_DDSImage_copy(dst,src);
 }
 
 
 void 
-DDSImagePluginSupport_print_data(
-    const DDSImage *sample,
+px_comm_DDSImagePluginSupport_print_data(
+    const px_comm_DDSImage *sample,
     const char *desc,
     unsigned int indent_level)
 {
@@ -140,12 +142,15 @@ DDSImagePluginSupport_print_data(
     RTICdrType_printUnsignedLong(
         &sample->seq, "seq", indent_level + 1);
             
+
     RTICdrType_printLong(
         &sample->stamp_sec, "stamp_sec", indent_level + 1);
             
+
     RTICdrType_printLong(
         &sample->stamp_nsec, "stamp_nsec", indent_level + 1);
             
+
     if (&sample->frame_id==NULL) {
         RTICdrType_printString(
             NULL, "frame_id", indent_level + 1);                
@@ -154,12 +159,15 @@ DDSImagePluginSupport_print_data(
             sample->frame_id, "frame_id", indent_level + 1);                
     }
             
+
     RTICdrType_printUnsignedLong(
         &sample->height, "height", indent_level + 1);
             
+
     RTICdrType_printUnsignedLong(
         &sample->width, "width", indent_level + 1);
             
+
     if (&sample->encoding==NULL) {
         RTICdrType_printString(
             NULL, "encoding", indent_level + 1);                
@@ -168,12 +176,15 @@ DDSImagePluginSupport_print_data(
             sample->encoding, "encoding", indent_level + 1);                
     }
             
+
     RTICdrType_printChar(
         &sample->is_bigendian, "is_bigendian", indent_level + 1);
             
+
     RTICdrType_printUnsignedLong(
         &sample->step, "step", indent_level + 1);
             
+
     if (&sample->data == NULL) {
         RTICdrType_printIndent(indent_level+1);
         RTILog_debug("data: NULL\n");    
@@ -197,8 +208,8 @@ DDSImagePluginSupport_print_data(
     }
             
 
-}
 
+}
 
 
 /* ----------------------------------------------------------------------------
@@ -208,7 +219,7 @@ DDSImagePluginSupport_print_data(
 
 
 PRESTypePluginParticipantData 
-DDSImagePlugin_on_participant_attached(
+px_comm_DDSImagePlugin_on_participant_attached(
     void *registration_data,
     const struct PRESTypePluginParticipantInfo *participant_info,
     RTIBool top_level_registration,
@@ -227,7 +238,7 @@ DDSImagePlugin_on_participant_attached(
 
 
 void 
-DDSImagePlugin_on_participant_detached(
+px_comm_DDSImagePlugin_on_participant_detached(
     PRESTypePluginParticipantData participant_data)
 {
 
@@ -236,13 +247,15 @@ DDSImagePlugin_on_participant_detached(
 
 
 PRESTypePluginEndpointData
-DDSImagePlugin_on_endpoint_attached(
+px_comm_DDSImagePlugin_on_endpoint_attached(
     PRESTypePluginParticipantData participant_data,
     const struct PRESTypePluginEndpointInfo *endpoint_info,
     RTIBool top_level_registration, 
     void *containerPluginContext)
 {
     PRESTypePluginEndpointData epd = NULL;
+
+    unsigned int serializedSampleMaxSize;
 
    if (top_level_registration) {} /* To avoid warnings */
    if (containerPluginContext) {} /* To avoid warnings */
@@ -251,9 +264,9 @@ DDSImagePlugin_on_endpoint_attached(
             participant_data,
             endpoint_info,
             (PRESTypePluginDefaultEndpointDataCreateSampleFunction)
-            ::px_comm::DDSImagePluginSupport_create_data,
+            px_comm_DDSImagePluginSupport_create_data,
             (PRESTypePluginDefaultEndpointDataDestroySampleFunction)
-            ::px_comm::DDSImagePluginSupport_destroy_data,
+            px_comm_DDSImagePluginSupport_destroy_data,
             NULL, NULL);
 
     if (epd == NULL) {
@@ -261,14 +274,20 @@ DDSImagePlugin_on_endpoint_attached(
     }
 
     
+
     if (endpoint_info->endpointKind == PRES_TYPEPLUGIN_ENDPOINT_WRITER) {
+        serializedSampleMaxSize = px_comm_DDSImagePlugin_get_serialized_sample_max_size(
+            epd,RTI_FALSE,RTI_CDR_ENCAPSULATION_ID_CDR_BE,0);
+            
+        PRESTypePluginDefaultEndpointData_setMaxSizeSerializedSample(epd, serializedSampleMaxSize);
+
         if (PRESTypePluginDefaultEndpointData_createWriterPool(
                 epd,
                 endpoint_info,
             (PRESTypePluginGetSerializedSampleMaxSizeFunction)
-                ::px_comm::DDSImagePlugin_get_serialized_sample_max_size, epd,
+                px_comm_DDSImagePlugin_get_serialized_sample_max_size, epd,
             (PRESTypePluginGetSerializedSampleSizeFunction)
-            ::px_comm::DDSImagePlugin_get_serialized_sample_size,
+            px_comm_DDSImagePlugin_get_serialized_sample_size,
             epd) == RTI_FALSE) {
             PRESTypePluginDefaultEndpointData_delete(epd);
             return NULL;
@@ -282,33 +301,41 @@ DDSImagePlugin_on_endpoint_attached(
 
 
 void 
-DDSImagePlugin_on_endpoint_detached(
+px_comm_DDSImagePlugin_on_endpoint_detached(
     PRESTypePluginEndpointData endpoint_data)
 {  
 
     PRESTypePluginDefaultEndpointData_delete(endpoint_data);
 }
+ 
 
 
 RTIBool 
-DDSImagePlugin_copy_sample(
+px_comm_DDSImagePlugin_copy_sample(
     PRESTypePluginEndpointData endpoint_data,
-    DDSImage *dst,
-    const DDSImage *src)
+    px_comm_DDSImage *dst,
+    const px_comm_DDSImage *src)
 {
     if (endpoint_data) {} /* To avoid warnings */
-    return ::px_comm::DDSImagePluginSupport_copy_data(dst,src);
+    return px_comm_DDSImagePluginSupport_copy_data(dst,src);
 }
 
 /* --------------------------------------------------------------------------------------
     (De)Serialize functions:
  * -------------------------------------------------------------------------------------- */
 
+unsigned int 
+px_comm_DDSImagePlugin_get_serialized_sample_max_size(
+    PRESTypePluginEndpointData endpoint_data,
+    RTIBool include_encapsulation,
+    RTIEncapsulationId encapsulation_id,
+    unsigned int current_alignment);
+
 
 RTIBool 
-DDSImagePlugin_serialize(
+px_comm_DDSImagePlugin_serialize(
     PRESTypePluginEndpointData endpoint_data,
-    const DDSImage *sample, 
+    const px_comm_DDSImage *sample, 
     struct RTICdrStream *stream,    
     RTIBool serialize_encapsulation,
     RTIEncapsulationId encapsulation_id,
@@ -318,68 +345,77 @@ DDSImagePlugin_serialize(
     char * position = NULL;
     RTIBool retval = RTI_TRUE;
 
+    if (endpoint_data) {} /* To avoid warnings */
+    if (endpoint_plugin_qos) {} /* To avoid warnings */
 
-  if (endpoint_data) {} /* To avoid warnings */
-  if (endpoint_plugin_qos) {} /* To avoid warnings */
 
+    if(serialize_encapsulation) {
+  
+        if (!RTICdrStream_serializeAndSetCdrEncapsulation(stream, encapsulation_id)) {
+            return RTI_FALSE;
+        }
 
-  if(serialize_encapsulation) {
+        position = RTICdrStream_resetAlignment(stream);
 
-    if (!RTICdrStream_serializeAndSetCdrEncapsulation(stream, encapsulation_id)) {
-        return RTI_FALSE;
     }
 
-    position = RTICdrStream_resetAlignment(stream);
 
-  }
-
-  if(serialize_sample) {
-
+    if(serialize_sample) {
+    
     if (!RTICdrStream_serializeUnsignedLong(
         stream, &sample->seq)) {
         return RTI_FALSE;
     }
             
+
     if (!RTICdrStream_serializeLong(
         stream, &sample->stamp_sec)) {
         return RTI_FALSE;
     }
             
+
     if (!RTICdrStream_serializeLong(
         stream, &sample->stamp_nsec)) {
         return RTI_FALSE;
     }
             
+
     if (!RTICdrStream_serializeString(
         stream, sample->frame_id, (255) + 1)) {
         return RTI_FALSE;
     }
             
+
     if (!RTICdrStream_serializeUnsignedLong(
         stream, &sample->height)) {
         return RTI_FALSE;
     }
             
+
     if (!RTICdrStream_serializeUnsignedLong(
         stream, &sample->width)) {
         return RTI_FALSE;
     }
             
+
     if (!RTICdrStream_serializeString(
         stream, sample->encoding, (255) + 1)) {
         return RTI_FALSE;
     }
             
+
     if (!RTICdrStream_serializeChar(
         stream, &sample->is_bigendian)) {
         return RTI_FALSE;
     }
             
+
     if (!RTICdrStream_serializeUnsignedLong(
         stream, &sample->step)) {
         return RTI_FALSE;
     }
             
+
     if (DDS_CharSeq_get_contiguous_bufferI(&sample->data) != NULL) {
         if (!RTICdrStream_serializePrimitiveSequence(
             stream,
@@ -400,11 +436,13 @@ DDSImagePlugin_serialize(
         }
     }
             
-  }
 
-  if(serialize_encapsulation) {
-    RTICdrStream_restoreAlignment(stream,position);
-  }
+    }
+
+
+    if(serialize_encapsulation) {
+        RTICdrStream_restoreAlignment(stream,position);
+    }
 
 
   return retval;
@@ -412,15 +450,17 @@ DDSImagePlugin_serialize(
 
 
 RTIBool 
-DDSImagePlugin_deserialize_sample(
+px_comm_DDSImagePlugin_deserialize_sample(
     PRESTypePluginEndpointData endpoint_data,
-    DDSImage *sample,
+    px_comm_DDSImage *sample,
     struct RTICdrStream *stream,   
     RTIBool deserialize_encapsulation,
     RTIBool deserialize_sample, 
     void *endpoint_plugin_qos)
 {
     char * position = NULL;
+
+    RTIBool done = RTI_FALSE;
 
     if (endpoint_data) {} /* To avoid warnings */
     if (endpoint_plugin_qos) {} /* To avoid warnings */
@@ -436,54 +476,57 @@ DDSImagePlugin_deserialize_sample(
 
     }
     
+    
     if(deserialize_sample) {
-
-
+        px_comm_DDSImage_initialize_ex(sample, RTI_FALSE, RTI_FALSE);
+    
     if (!RTICdrStream_deserializeUnsignedLong(
         stream, &sample->seq)) {
-        return RTI_FALSE;
+        goto fin;
     }
-            
+
     if (!RTICdrStream_deserializeLong(
         stream, &sample->stamp_sec)) {
-        return RTI_FALSE;
+        goto fin;
     }
-            
+
     if (!RTICdrStream_deserializeLong(
         stream, &sample->stamp_nsec)) {
-        return RTI_FALSE;
+        goto fin;
     }
-            
+
     if (!RTICdrStream_deserializeString(
         stream, sample->frame_id, (255) + 1)) {
-        return RTI_FALSE;
+        goto fin;
     }
             
+
     if (!RTICdrStream_deserializeUnsignedLong(
         stream, &sample->height)) {
-        return RTI_FALSE;
+        goto fin;
     }
-            
+
     if (!RTICdrStream_deserializeUnsignedLong(
         stream, &sample->width)) {
-        return RTI_FALSE;
+        goto fin;
     }
-            
+
     if (!RTICdrStream_deserializeString(
         stream, sample->encoding, (255) + 1)) {
-        return RTI_FALSE;
+        goto fin;
     }
             
+
     if (!RTICdrStream_deserializeChar(
         stream, &sample->is_bigendian)) {
-        return RTI_FALSE;
+        goto fin;
     }
-            
+
     if (!RTICdrStream_deserializeUnsignedLong(
         stream, &sample->step)) {
-        return RTI_FALSE;
+        goto fin;
     }
-            
+
     {
         RTICdrUnsignedLong sequence_length;
 
@@ -494,7 +537,7 @@ DDSImagePlugin_deserialize_sample(
                 &sequence_length,
                 DDS_CharSeq_get_maximum(&sample->data),
                 RTI_CDR_CHAR_TYPE)) {
-                return RTI_FALSE;
+                goto fin;
             }
         } else {
             if (!RTICdrStream_deserializePrimitivePointerSequence(
@@ -503,7 +546,7 @@ DDSImagePlugin_deserialize_sample(
                 &sequence_length,
                 DDS_CharSeq_get_maximum(&sample->data),
                 RTI_CDR_CHAR_TYPE)) {
-                return RTI_FALSE;
+                goto fin;
             }
         }
         if (!DDS_CharSeq_set_length(&sample->data, sequence_length)) {
@@ -511,8 +554,14 @@ DDSImagePlugin_deserialize_sample(
         }
     }
             
+
     }
 
+    done = RTI_TRUE;
+fin:
+    if (done != RTI_TRUE && RTICdrStream_getRemainder(stream) >  0) {
+        return RTI_FALSE;   
+    }
 
     if(deserialize_encapsulation) {
         RTICdrStream_restoreAlignment(stream,position);
@@ -524,10 +573,11 @@ DDSImagePlugin_deserialize_sample(
 
  
  
+
 RTIBool 
-DDSImagePlugin_deserialize(
+px_comm_DDSImagePlugin_deserialize(
     PRESTypePluginEndpointData endpoint_data,
-    DDSImage **sample,
+    px_comm_DDSImage **sample,
     RTIBool * drop_sample,
     struct RTICdrStream *stream,   
     RTIBool deserialize_encapsulation,
@@ -537,7 +587,7 @@ DDSImagePlugin_deserialize(
 
     if (drop_sample) {} /* To avoid warnings */
 
-    return ::px_comm::DDSImagePlugin_deserialize_sample( 
+    return px_comm_DDSImagePlugin_deserialize_sample( 
         endpoint_data, (sample != NULL)?*sample:NULL,
         stream, deserialize_encapsulation, deserialize_sample, 
         endpoint_plugin_qos);
@@ -546,7 +596,8 @@ DDSImagePlugin_deserialize(
 
 
 
-RTIBool DDSImagePlugin_skip(
+
+RTIBool px_comm_DDSImagePlugin_skip(
     PRESTypePluginEndpointData endpoint_data,
     struct RTICdrStream *stream,   
     RTIBool skip_encapsulation,
@@ -554,6 +605,8 @@ RTIBool DDSImagePlugin_skip(
     void *endpoint_plugin_qos)
 {
     char * position = NULL;
+
+    RTIBool done = RTI_FALSE;
 
     if (endpoint_data) {} /* To avoid warnings */
     if (endpoint_plugin_qos) {} /* To avoid warnings */
@@ -572,41 +625,50 @@ RTIBool DDSImagePlugin_skip(
     if (skip_sample) {
 
     if (!RTICdrStream_skipUnsignedLong(stream)) {
-        return RTI_FALSE;
+        goto fin;
     }
             
+
     if (!RTICdrStream_skipLong(stream)) {
-        return RTI_FALSE;
+        goto fin;
     }
             
+
     if (!RTICdrStream_skipLong(stream)) {
-        return RTI_FALSE;
+        goto fin;
     }
             
+
     if (!RTICdrStream_skipString(stream, (255) + 1)) {
-        return RTI_FALSE;
+        goto fin;
     }
             
+
     if (!RTICdrStream_skipUnsignedLong(stream)) {
-        return RTI_FALSE;
+        goto fin;
     }
             
+
     if (!RTICdrStream_skipUnsignedLong(stream)) {
-        return RTI_FALSE;
+        goto fin;
     }
             
+
     if (!RTICdrStream_skipString(stream, (255) + 1)) {
-        return RTI_FALSE;
+        goto fin;
     }
             
+
     if (!RTICdrStream_skipChar(stream)) {
-        return RTI_FALSE;
+        goto fin;
     }
             
+
     if (!RTICdrStream_skipUnsignedLong(stream)) {
-        return RTI_FALSE;
+        goto fin;
     }
             
+
     {
         RTICdrUnsignedLong sequence_length;
 
@@ -614,12 +676,20 @@ RTIBool DDSImagePlugin_skip(
             stream,
             &sequence_length,
             RTI_CDR_CHAR_TYPE)) {
-            return RTI_FALSE;
+            goto fin;
         }
     }
             
-    }
 
+
+    }
+    
+
+    done = RTI_TRUE;
+fin:
+    if (done != RTI_TRUE && RTICdrStream_getRemainder(stream) >  0) {
+        return RTI_FALSE;   
+    }
 
     if(skip_encapsulation) {
         RTICdrStream_restoreAlignment(stream,position);
@@ -631,7 +701,7 @@ RTIBool DDSImagePlugin_skip(
 
 
 unsigned int 
-DDSImagePlugin_get_serialized_sample_max_size(
+px_comm_DDSImagePlugin_get_serialized_sample_max_size(
     PRESTypePluginEndpointData endpoint_data,
     RTIBool include_encapsulation,
     RTIEncapsulationId encapsulation_id,
@@ -662,33 +732,43 @@ DDSImagePlugin_get_serialized_sample_max_size(
     current_alignment +=  RTICdrType_getUnsignedLongMaxSizeSerialized(
         current_alignment);
             
+
     current_alignment +=  RTICdrType_getLongMaxSizeSerialized(
         current_alignment);
             
+
     current_alignment +=  RTICdrType_getLongMaxSizeSerialized(
         current_alignment);
             
+
     current_alignment +=  RTICdrType_getStringMaxSizeSerialized(
         current_alignment, (255) + 1);
             
+
     current_alignment +=  RTICdrType_getUnsignedLongMaxSizeSerialized(
         current_alignment);
             
+
     current_alignment +=  RTICdrType_getUnsignedLongMaxSizeSerialized(
         current_alignment);
             
+
     current_alignment +=  RTICdrType_getStringMaxSizeSerialized(
         current_alignment, (255) + 1);
             
+
     current_alignment +=  RTICdrType_getCharMaxSizeSerialized(
         current_alignment);
             
+
     current_alignment +=  RTICdrType_getUnsignedLongMaxSizeSerialized(
         current_alignment);
             
+
     current_alignment +=  RTICdrType_getPrimitiveSequenceMaxSizeSerialized(
         current_alignment, (1251936), RTI_CDR_CHAR_TYPE);
             
+
     if (include_encapsulation) {
         current_alignment += encapsulation_size;
     }
@@ -698,7 +778,7 @@ DDSImagePlugin_get_serialized_sample_max_size(
 
 
 unsigned int 
-DDSImagePlugin_get_serialized_sample_min_size(
+px_comm_DDSImagePlugin_get_serialized_sample_min_size(
     PRESTypePluginEndpointData endpoint_data,
     RTIBool include_encapsulation,
     RTIEncapsulationId encapsulation_id,
@@ -729,33 +809,43 @@ DDSImagePlugin_get_serialized_sample_min_size(
     current_alignment +=  RTICdrType_getUnsignedLongMaxSizeSerialized(
         current_alignment);
             
+
     current_alignment +=  RTICdrType_getLongMaxSizeSerialized(
         current_alignment);
             
+
     current_alignment +=  RTICdrType_getLongMaxSizeSerialized(
         current_alignment);
             
+
     current_alignment +=  RTICdrType_getStringMaxSizeSerialized(
         current_alignment, 1);
             
+
     current_alignment +=  RTICdrType_getUnsignedLongMaxSizeSerialized(
         current_alignment);
             
+
     current_alignment +=  RTICdrType_getUnsignedLongMaxSizeSerialized(
         current_alignment);
             
+
     current_alignment +=  RTICdrType_getStringMaxSizeSerialized(
         current_alignment, 1);
             
+
     current_alignment +=  RTICdrType_getCharMaxSizeSerialized(
         current_alignment);
             
+
     current_alignment +=  RTICdrType_getUnsignedLongMaxSizeSerialized(
         current_alignment);
             
+
     current_alignment +=  RTICdrType_getPrimitiveSequenceMaxSizeSerialized(
         current_alignment, 0, RTI_CDR_CHAR_TYPE);
             
+
     if (include_encapsulation) {
         current_alignment += encapsulation_size;
     }
@@ -771,12 +861,12 @@ DDSImagePlugin_get_serialized_sample_min_size(
  * encapsulation flags.
  */
 unsigned int
-DDSImagePlugin_get_serialized_sample_size(
+px_comm_DDSImagePlugin_get_serialized_sample_size(
     PRESTypePluginEndpointData endpoint_data,
     RTIBool include_encapsulation,
     RTIEncapsulationId encapsulation_id,
     unsigned int current_alignment,
-    const DDSImage * sample) 
+    const px_comm_DDSImage * sample) 
 {
 
     unsigned int initial_alignment = current_alignment;
@@ -804,35 +894,45 @@ DDSImagePlugin_get_serialized_sample_size(
     current_alignment += RTICdrType_getUnsignedLongMaxSizeSerialized(
         current_alignment);
             
+
     current_alignment += RTICdrType_getLongMaxSizeSerialized(
         current_alignment);
             
+
     current_alignment += RTICdrType_getLongMaxSizeSerialized(
         current_alignment);
             
+
     current_alignment += RTICdrType_getStringSerializedSize(
         current_alignment, sample->frame_id);
             
+
     current_alignment += RTICdrType_getUnsignedLongMaxSizeSerialized(
         current_alignment);
             
+
     current_alignment += RTICdrType_getUnsignedLongMaxSizeSerialized(
         current_alignment);
             
+
     current_alignment += RTICdrType_getStringSerializedSize(
         current_alignment, sample->encoding);
             
+
     current_alignment += RTICdrType_getCharMaxSizeSerialized(
         current_alignment);
             
+
     current_alignment += RTICdrType_getUnsignedLongMaxSizeSerialized(
         current_alignment);
             
+
     current_alignment += RTICdrType_getPrimitiveSequenceSerializedSize(
         current_alignment, 
         DDS_CharSeq_get_length(&sample->data),
         RTI_CDR_CHAR_TYPE);
             
+
     if (include_encapsulation) {
         current_alignment += encapsulation_size;
     }
@@ -840,13 +940,19 @@ DDSImagePlugin_get_serialized_sample_size(
     return current_alignment - initial_alignment;
 }
 
+
+
+
+
+
+
 /* --------------------------------------------------------------------------------------
     Key Management functions:
  * -------------------------------------------------------------------------------------- */
 
 
 PRESTypePluginKeyKind 
-DDSImagePlugin_get_key_kind(void)
+px_comm_DDSImagePlugin_get_key_kind(void)
 {
 
     return PRES_TYPEPLUGIN_NO_KEY;
@@ -855,9 +961,9 @@ DDSImagePlugin_get_key_kind(void)
 
 
 RTIBool 
-DDSImagePlugin_serialize_key(
+px_comm_DDSImagePlugin_serialize_key(
     PRESTypePluginEndpointData endpoint_data,
-    const DDSImage *sample, 
+    const px_comm_DDSImage *sample, 
     struct RTICdrStream *stream,    
     RTIBool serialize_encapsulation,
     RTIEncapsulationId encapsulation_id,
@@ -871,6 +977,7 @@ DDSImagePlugin_serialize_key(
 
 
     if(serialize_encapsulation) {
+    
         if (!RTICdrStream_serializeAndSetCdrEncapsulation(stream, encapsulation_id)) {
             return RTI_FALSE;
         }
@@ -882,7 +989,7 @@ DDSImagePlugin_serialize_key(
 
     if(serialize_key) {
 
-        if (!::px_comm::DDSImagePlugin_serialize(
+        if (!px_comm_DDSImagePlugin_serialize(
                 endpoint_data,
                 sample,
                 stream,
@@ -904,9 +1011,9 @@ DDSImagePlugin_serialize_key(
 }
 
 
-RTIBool DDSImagePlugin_deserialize_key_sample(
+RTIBool px_comm_DDSImagePlugin_deserialize_key_sample(
     PRESTypePluginEndpointData endpoint_data,
-    DDSImage *sample, 
+    px_comm_DDSImage *sample, 
     struct RTICdrStream *stream,
     RTIBool deserialize_encapsulation,
     RTIBool deserialize_key,
@@ -931,7 +1038,7 @@ RTIBool DDSImagePlugin_deserialize_key_sample(
 
     if (deserialize_key) {
 
-        if (!::px_comm::DDSImagePlugin_deserialize_sample(
+        if (!px_comm_DDSImagePlugin_deserialize_sample(
                 endpoint_data, sample, stream,
                 RTI_FALSE, RTI_TRUE, 
                 endpoint_plugin_qos)) {
@@ -951,9 +1058,9 @@ RTIBool DDSImagePlugin_deserialize_key_sample(
 
 
  
-RTIBool DDSImagePlugin_deserialize_key(
+RTIBool px_comm_DDSImagePlugin_deserialize_key(
     PRESTypePluginEndpointData endpoint_data,
-    DDSImage **sample, 
+    px_comm_DDSImage **sample, 
     RTIBool * drop_sample,
     struct RTICdrStream *stream,
     RTIBool deserialize_encapsulation,
@@ -961,7 +1068,7 @@ RTIBool DDSImagePlugin_deserialize_key(
     void *endpoint_plugin_qos)
 {
     if (drop_sample) {} /* To avoid warnings */
-    return ::px_comm::DDSImagePlugin_deserialize_key_sample(
+    return px_comm_DDSImagePlugin_deserialize_key_sample(
         endpoint_data, (sample != NULL)?*sample:NULL, stream,
         deserialize_encapsulation, deserialize_key, endpoint_plugin_qos);
 }
@@ -969,7 +1076,7 @@ RTIBool DDSImagePlugin_deserialize_key(
 
 
 unsigned int
-DDSImagePlugin_get_serialized_key_max_size(
+px_comm_DDSImagePlugin_get_serialized_key_max_size(
     PRESTypePluginEndpointData endpoint_data,
     RTIBool include_encapsulation,
     RTIEncapsulationId encapsulation_id,
@@ -999,7 +1106,7 @@ DDSImagePlugin_get_serialized_key_max_size(
     }
         
 
-    current_alignment += ::px_comm::DDSImagePlugin_get_serialized_sample_max_size(
+    current_alignment += px_comm_DDSImagePlugin_get_serialized_sample_max_size(
         endpoint_data,RTI_FALSE, encapsulation_id, current_alignment);
     
     if (include_encapsulation) {
@@ -1011,15 +1118,19 @@ DDSImagePlugin_get_serialized_key_max_size(
 
 
 RTIBool 
-DDSImagePlugin_serialized_sample_to_key(
+px_comm_DDSImagePlugin_serialized_sample_to_key(
     PRESTypePluginEndpointData endpoint_data,
-    DDSImage *sample,
+    px_comm_DDSImage *sample,
     struct RTICdrStream *stream, 
     RTIBool deserialize_encapsulation,  
     RTIBool deserialize_key, 
     void *endpoint_plugin_qos)
 {
     char * position = NULL;
+
+    RTIBool done = RTI_FALSE;
+
+    if (stream == NULL) goto fin; /* To avoid warnings */
 
 
     if(deserialize_encapsulation) {
@@ -1033,7 +1144,7 @@ DDSImagePlugin_serialized_sample_to_key(
 
     if (deserialize_key) {
 
-        if (!::px_comm::DDSImagePlugin_deserialize_sample(
+        if (!px_comm_DDSImagePlugin_deserialize_sample(
             endpoint_data, sample, stream, RTI_FALSE, 
             RTI_TRUE, endpoint_plugin_qos)) {
             return RTI_FALSE;
@@ -1041,6 +1152,12 @@ DDSImagePlugin_serialized_sample_to_key(
 
     }
 
+
+    done = RTI_TRUE;
+fin:
+    if (done != RTI_TRUE && RTICdrStream_getRemainder(stream) >  0) {
+        return RTI_FALSE;   
+    }
 
     if(deserialize_encapsulation) {
         RTICdrStream_restoreAlignment(stream,position);
@@ -1057,7 +1174,7 @@ DDSImagePlugin_serialized_sample_to_key(
  * Plug-in Installation Methods
  * ------------------------------------------------------------------------ */
  
-struct PRESTypePlugin *DDSImagePlugin_new(void) 
+struct PRESTypePlugin *px_comm_DDSImagePlugin_new(void) 
 { 
     struct PRESTypePlugin *plugin = NULL;
     const struct PRESTypePluginVersion PLUGIN_VERSION = 
@@ -1074,51 +1191,51 @@ struct PRESTypePlugin *DDSImagePlugin_new(void)
     /* set up parent's function pointers */
     plugin->onParticipantAttached =
         (PRESTypePluginOnParticipantAttachedCallback)
-        ::px_comm::DDSImagePlugin_on_participant_attached;
+        px_comm_DDSImagePlugin_on_participant_attached;
     plugin->onParticipantDetached =
         (PRESTypePluginOnParticipantDetachedCallback)
-        ::px_comm::DDSImagePlugin_on_participant_detached;
+        px_comm_DDSImagePlugin_on_participant_detached;
     plugin->onEndpointAttached =
         (PRESTypePluginOnEndpointAttachedCallback)
-        ::px_comm::DDSImagePlugin_on_endpoint_attached;
+        px_comm_DDSImagePlugin_on_endpoint_attached;
     plugin->onEndpointDetached =
         (PRESTypePluginOnEndpointDetachedCallback)
-        ::px_comm::DDSImagePlugin_on_endpoint_detached;
+        px_comm_DDSImagePlugin_on_endpoint_detached;
 
     plugin->copySampleFnc =
         (PRESTypePluginCopySampleFunction)
-        ::px_comm::DDSImagePlugin_copy_sample;
+        px_comm_DDSImagePlugin_copy_sample;
     plugin->createSampleFnc =
         (PRESTypePluginCreateSampleFunction)
-        DDSImagePlugin_create_sample;
+        px_comm_DDSImagePlugin_create_sample;
     plugin->destroySampleFnc =
         (PRESTypePluginDestroySampleFunction)
-        DDSImagePlugin_destroy_sample;
+        px_comm_DDSImagePlugin_destroy_sample;
 
     plugin->serializeFnc =
         (PRESTypePluginSerializeFunction)
-        ::px_comm::DDSImagePlugin_serialize;
+        px_comm_DDSImagePlugin_serialize;
     plugin->deserializeFnc =
         (PRESTypePluginDeserializeFunction)
-        ::px_comm::DDSImagePlugin_deserialize;
+        px_comm_DDSImagePlugin_deserialize;
     plugin->getSerializedSampleMaxSizeFnc =
         (PRESTypePluginGetSerializedSampleMaxSizeFunction)
-        ::px_comm::DDSImagePlugin_get_serialized_sample_max_size;
+        px_comm_DDSImagePlugin_get_serialized_sample_max_size;
     plugin->getSerializedSampleMinSizeFnc =
         (PRESTypePluginGetSerializedSampleMinSizeFunction)
-        ::px_comm::DDSImagePlugin_get_serialized_sample_min_size;
+        px_comm_DDSImagePlugin_get_serialized_sample_min_size;
 
 
     plugin->getSampleFnc =
         (PRESTypePluginGetSampleFunction)
-        DDSImagePlugin_get_sample;
+        px_comm_DDSImagePlugin_get_sample;
     plugin->returnSampleFnc =
         (PRESTypePluginReturnSampleFunction)
-        DDSImagePlugin_return_sample;
+        px_comm_DDSImagePlugin_return_sample;
 
     plugin->getKeyKindFnc =
         (PRESTypePluginGetKeyKindFunction)
-        ::px_comm::DDSImagePlugin_get_key_kind;
+        px_comm_DDSImagePlugin_get_key_kind;
 
  
     /* These functions are only used for keyed types. As this is not a keyed
@@ -1135,30 +1252,28 @@ struct PRESTypePlugin *DDSImagePlugin_new(void)
     plugin->serializedSampleToKeyHashFnc = NULL;
     plugin->serializedKeyToKeyHashFnc = NULL;
     
-    plugin->typeCode =  (struct RTICdrTypeCode *)::px_comm::DDSImage_get_typecode();
+    plugin->typeCode =  (struct RTICdrTypeCode *)px_comm_DDSImage_get_typecode();
     
     plugin->languageKind = PRES_TYPEPLUGIN_DDS_TYPE; 
 
     /* Serialized buffer */
     plugin->getBuffer = 
         (PRESTypePluginGetBufferFunction)
-        DDSImagePlugin_get_buffer;
+        px_comm_DDSImagePlugin_get_buffer;
     plugin->returnBuffer = 
         (PRESTypePluginReturnBufferFunction)
-        DDSImagePlugin_return_buffer;
+        px_comm_DDSImagePlugin_return_buffer;
     plugin->getSerializedSampleSizeFnc =
         (PRESTypePluginGetSerializedSampleSizeFunction)
-        ::px_comm::DDSImagePlugin_get_serialized_sample_size;
+        px_comm_DDSImagePlugin_get_serialized_sample_size;
 
-    plugin->endpointTypeName = DDSImageTYPENAME;
+    plugin->endpointTypeName = px_comm_DDSImageTYPENAME;
 
     return plugin;
 }
 
 void
-DDSImagePlugin_delete(struct PRESTypePlugin *plugin)
+px_comm_DDSImagePlugin_delete(struct PRESTypePlugin *plugin)
 {
     RTIOsapiHeap_freeStructure(plugin);
 } 
-
-} /* namespace px_comm */

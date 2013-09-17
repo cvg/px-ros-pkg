@@ -20,8 +20,6 @@
 #endif        
 
 
-namespace px_comm{
-
 
 
 /* ========================================================================= */
@@ -33,7 +31,7 @@ namespace px_comm{
               TDataReader,
               TTypeSupport
 
-   Configure and implement 'DDSImage' support classes.
+   Configure and implement 'px_comm_DDSImage' support classes.
 
    Note: Only the #defined classes get defined
 */
@@ -49,11 +47,11 @@ namespace px_comm{
 */
 
 /* Requires */
-#define TTYPENAME   DDSImageTYPENAME
+#define TTYPENAME   px_comm_DDSImageTYPENAME
 
 /* Defines */
-#define TDataWriter DDSImageDataWriter
-#define TData       ::px_comm::DDSImage
+#define TDataWriter px_comm_DDSImageDataWriter
+#define TData       px_comm_DDSImage
 
 
 #ifdef __cplusplus
@@ -79,12 +77,12 @@ namespace px_comm{
 */
 
 /* Requires */
-#define TTYPENAME   DDSImageTYPENAME
+#define TTYPENAME   px_comm_DDSImageTYPENAME
 
 /* Defines */
-#define TDataReader DDSImageDataReader
-#define TDataSeq    DDSImageSeq
-#define TData       ::px_comm::DDSImage
+#define TDataReader px_comm_DDSImageDataReader
+#define TDataSeq    px_comm_DDSImageSeq
+#define TData       px_comm_DDSImage
 
 
 #ifdef __cplusplus
@@ -112,15 +110,15 @@ namespace px_comm{
 */
 
 /* Requires */
-#define TTYPENAME    DDSImageTYPENAME
-#define TPlugin_new  ::px_comm::DDSImagePlugin_new
-#define TPlugin_delete  ::px_comm::DDSImagePlugin_delete
+#define TTYPENAME    px_comm_DDSImageTYPENAME
+#define TPlugin_new  px_comm_DDSImagePlugin_new
+#define TPlugin_delete  px_comm_DDSImagePlugin_delete
 
 /* Defines */
-#define TTypeSupport DDSImageTypeSupport
-#define TData        ::px_comm::DDSImage
-#define TDataReader  DDSImageDataReader
-#define TDataWriter  DDSImageDataWriter
+#define TTypeSupport px_comm_DDSImageTypeSupport
+#define TData        px_comm_DDSImage
+#define TDataReader  px_comm_DDSImageDataReader
+#define TDataWriter  px_comm_DDSImageDataWriter
 #ifdef __cplusplus
 
 
@@ -142,5 +140,3 @@ namespace px_comm{
 #undef TPlugin_delete
 
 
-
-} /* namespace px_comm */
