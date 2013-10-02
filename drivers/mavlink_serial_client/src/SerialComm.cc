@@ -14,7 +14,7 @@
 namespace px
 {
 
-SerialComm::SerialComm(const std::string& frameId)
+SerialComm::SerialComm(ros::NodeHandle& nh, const std::string& frameId)
  : m_port(m_uartService)
  , m_timer(m_uartService)
  , m_imageSize(0)
@@ -24,6 +24,7 @@ SerialComm::SerialComm(const std::string& frameId)
  , m_imageHeight(0)
  , m_systemId(-1)
  , m_compId(0)
+ , m_nh(nh)
  , m_frameId(frameId)
  , m_timeout(false)
  , m_errorCount(0)
@@ -80,29 +81,25 @@ SerialComm::open(const std::string& portStr, int baudrate)
     }
 
     // set up publishers
-    ros::NodeHandle mavlink_nh("mavlink");
+    m_mavlinkPub = m_nh.advertise<px_comm::Mavlink>("mavlink", 100);
+    m_optFlowPub = m_nh.advertise<px_comm::OpticalFlow>("opt_flow", 5);
 
-    m_mavlinkPub = mavlink_nh.advertise<px_comm::Mavlink>("mavlink", 100);
-    m_optFlowPub = mavlink_nh.advertise<px_comm::OpticalFlow>("opt_flow", 5);
-
-    image_transport::ImageTransport it(mavlink_nh);
+    image_transport::ImageTransport it(m_nh);
     m_imagePub = it.advertise("camera_image", 5);
 
     // AscTec-specific
-    ros::NodeHandle nh("fcu");
+    m_imuPub = m_nh.advertise<sensor_msgs::Imu>("imu", 10);
+    m_magPub = m_nh.advertise<sensor_msgs::MagneticField>("mag", 10);
+    m_viconPub = m_nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("vicon", 10);
 
-    m_imuPub = nh.advertise<sensor_msgs::Imu>("imu", 10);
-    m_magPub = nh.advertise<sensor_msgs::MagneticField>("mag", 10);
-    m_viconPub = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("pose", 10);
-
-    ros::NodeHandle raw_nh("fcu/raw");
-    m_imuRawPub = nh.advertise<sensor_msgs::Imu>("imu", 10);
+    ros::NodeHandle raw_nh(m_nh, "raw");
+    m_imuRawPub = m_nh.advertise<sensor_msgs::Imu>("imu", 10);
 
     // set up thread to asynchronously read data from serial port
     readStart(1000);
     m_uartThread = boost::thread(boost::bind(&boost::asio::io_service::run, &m_uartService));
 
-    ros::Timer syncTimer = nh.createTimer(ros::Duration(2.0), boost::bind(&SerialComm::syncCallback, this, _1));
+    ros::Timer syncTimer = m_nh.createTimer(ros::Duration(2.0), boost::bind(&SerialComm::syncCallback, this, _1));
 
     m_connected = true;
 

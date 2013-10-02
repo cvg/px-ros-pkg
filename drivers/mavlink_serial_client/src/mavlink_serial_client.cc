@@ -44,7 +44,7 @@ main(int argc, char** argv)
     std::string frameId;
     pnh.param("frame_id", frameId, std::string("fcu"));
 
-    px::SerialComm comm(frameId);
+    px::SerialComm comm(nh, frameId);
     if (!comm.open(portStr, baudrate))
     {
         return -1;
@@ -56,4 +56,3 @@ main(int argc, char** argv)
 
     return 0;
 }
-

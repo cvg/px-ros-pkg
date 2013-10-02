@@ -14,7 +14,7 @@ namespace px
 class SerialComm
 {
 public:
-    SerialComm(const std::string& frameId);
+    SerialComm(ros::NodeHandle& nh, const std::string& frameId);
     ~SerialComm();
 
     bool open(const std::string& portStr, int baudrate);
@@ -47,6 +47,7 @@ private:
 
     uint8_t m_buffer[MAVLINK_MAX_PACKET_LEN];
 
+    ros::NodeHandle m_nh;
     image_transport::Publisher m_imagePub;
     ros::Publisher m_imuPub;
     ros::Publisher m_imuRawPub;
