@@ -369,7 +369,7 @@ SerialComm::readCallback(const boost::system::error_code& error, size_t bytesTra
 
                 px_comm::OpticalFlow optFlowMsg;
 
-                optFlowMsg.header.stamp = ros::Time(flow.time_usec / 1000000, (flow.time_usec % 1000000) * 1000);
+                optFlowMsg.header.stamp = ros::Time::now();
                 optFlowMsg.header.frame_id = m_frameId;
                 optFlowMsg.ground_distance = flow.ground_distance;
                 optFlowMsg.flow_x = flow.flow_x;
@@ -392,6 +392,9 @@ SerialComm::readCallback(const boost::system::error_code& error, size_t bytesTra
                 mavlink_vicon_position_estimate_t pos;
                 mavlink_msg_vicon_position_estimate_decode(&message, &pos);
                 geometry_msgs::PoseWithCovarianceStamped poseStampedMsg;
+
+                poseStampedMsg.header.stamp = ros::Time::now();
+                poseStampedMsg.header.frame_id = m_frameId;
 
                 double tx = pos.y;
                 double ty = pos.x;
