@@ -93,7 +93,7 @@ SerialComm::open(const std::string& portStr, int baudrate)
     m_viconPub = m_nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("vicon", 10);
 
     ros::NodeHandle raw_nh(m_nh, "raw");
-    m_imuRawPub = m_nh.advertise<sensor_msgs::Imu>("imu", 10);
+    m_imuRawPub = raw_nh.advertise<sensor_msgs::Imu>("imu", 10);
 
     // set up thread to asynchronously read data from serial port
     readStart(1000);

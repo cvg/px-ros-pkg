@@ -31,7 +31,9 @@ int
 main(int argc, char** argv)
 {
     ros::init(argc, argv, "mavlink");
-    ros::NodeHandle nh("mavlink");
+
+    std::string nodeName = ros::this_node::getName();
+    ros::NodeHandle nh(nodeName);
 
     ros::NodeHandle pnh("~");
 
