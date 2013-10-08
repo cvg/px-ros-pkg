@@ -3,11 +3,12 @@ project(mavlink_serial_client)
 
 find_package(catkin REQUIRED COMPONENTS roscpp std_msgs sensor_msgs image_transport px_comm)
 find_package(Boost REQUIRED COMPONENTS thread system signals)
+find_package(Eigen REQUIRED)
 
 catkin_package(
   INCLUDE_DIRS include
   CATKIN_DEPENDS roscpp std_msgs sensor_msgs image_transport px_comm
-  DEPENDS boost
+  DEPENDS boost eigen
 )
 
 ###########
@@ -17,6 +18,7 @@ catkin_package(
 include_directories(include
   ../../mavlink/include/mavlink/v1.0
   ${catkin_INCLUDE_DIRS}
+  ${Eigen_INCLUDE_DIRS}
 )
 
 add_executable(mavlink_serial_client

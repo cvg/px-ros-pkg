@@ -1,9 +1,10 @@
 #include <boost/bind.hpp>
+#include <Eigen/Dense>
 
 // ROS includes
 #include <px_comm/Mavlink.h>
 #include <px_comm/OpticalFlow.h>
-#include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <geometry_msgs/PoseStamped.h>
 #include <sensor_msgs/image_encodings.h>
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/Imu.h>
@@ -90,7 +91,7 @@ SerialComm::open(const std::string& portStr, int baudrate)
     // AscTec-specific
     m_imuPub = m_nh.advertise<sensor_msgs::Imu>("imu", 10);
     m_magPub = m_nh.advertise<sensor_msgs::MagneticField>("mag", 10);
-    m_viconPub = m_nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("vicon", 10);
+    m_viconPub = m_nh.advertise<geometry_msgs::PoseStamped>("vicon", 10);
 
     ros::NodeHandle raw_nh(m_nh, "raw");
     m_imuRawPub = raw_nh.advertise<sensor_msgs::Imu>("imu", 10);
@@ -391,53 +392,25 @@ SerialComm::readCallback(const boost::system::error_code& error, size_t bytesTra
 
                 mavlink_vicon_position_estimate_t pos;
                 mavlink_msg_vicon_position_estimate_decode(&message, &pos);
-                geometry_msgs::PoseWithCovarianceStamped poseStampedMsg;
+                geometry_msgs::PoseStamped poseStampedMsg;
 
-                poseStampedMsg.header.stamp = ros::Time::now();
+                poseStampedMsg.header.stamp = ros::Time().fromNSec(pos.usec * 1000);
                 poseStampedMsg.header.frame_id = m_frameId;
 
-                double tx = pos.y;
-                double ty = pos.x;
-                double tz = -pos.z;
+                Eigen::Matrix3d R;
+                R = Eigen::AngleAxisd(pos.yaw, Eigen::Vector3d::UnitZ()) *
+                    Eigen::AngleAxisd(pos.pitch, Eigen::Vector3d::UnitY()) *
+                    Eigen::AngleAxisd(pos.roll, Eigen::Vector3d::UnitX());
+                Eigen::Quaterniond q(R);
 
-                double r = pos.roll;
-                double p = pos.pitch;
+                poseStampedMsg.pose.orientation.x = q.x();
+                poseStampedMsg.pose.orientation.y = q.y();
+                poseStampedMsg.pose.orientation.z = q.z();
+                poseStampedMsg.pose.orientation.w = q.w();
 
-                // NED to ENU yaw
-                double y = fmod(-pos.yaw + M_PI_2 + M_PI, 2.0 * M_PI) - M_PI;
-
-                double cRh = cos(r/2.0);
-                double sRh = sin(r/2.0);
-                double cPh = cos(p/2.0);
-                double sPh = sin(p/2.0);
-                double cYh = cos(y/2.0);
-                double sYh = sin(y/2.0);
-
-                double w, x, z;
-
-                w = cRh*cPh*cYh + sRh*sPh*sYh;
-                x = sRh*cPh*cYh - cRh*sPh*sYh;
-                y = cRh*sPh*cYh + sRh*cPh*sYh;
-                z = cRh*cPh*sYh - sRh*sPh*cYh;
-
-                poseStampedMsg.pose.pose.orientation.x = x;
-                poseStampedMsg.pose.pose.orientation.y = y;
-                poseStampedMsg.pose.pose.orientation.z = z;
-                poseStampedMsg.pose.pose.orientation.w = w;
-
-                poseStampedMsg.pose.pose.position.x = tx;
-                poseStampedMsg.pose.pose.position.y = ty;
-                poseStampedMsg.pose.pose.position.z = tz;
-
-                // Set covariance of vicon to 0.05m std dev
-                poseStampedMsg.pose.covariance[0] = 0.05f*0.05f;
-                poseStampedMsg.pose.covariance[7] = 0.05f*0.05f;
-                poseStampedMsg.pose.covariance[14] = 0.05f*0.05f;
-
-                // Set covariance of vicon angle to 0.01 rad
-                poseStampedMsg.pose.covariance[21] = 0.01f*0.01f;
-                poseStampedMsg.pose.covariance[28] = 0.01f*0.01f;
-                poseStampedMsg.pose.covariance[35] = 0.01f*0.01f;
+                poseStampedMsg.pose.position.x = pos.x;
+                poseStampedMsg.pose.position.y = pos.y;
+                poseStampedMsg.pose.position.z = pos.z;
 
                 m_viconPub.publish(poseStampedMsg);
 
