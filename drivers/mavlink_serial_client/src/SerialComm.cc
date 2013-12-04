@@ -476,9 +476,12 @@ SerialComm::rpyToQuaternion(const double& roll, const double& pitch, const doubl
                             double& w, double& x, double& y, double& z) const
 {
     double sR2, cR2, sP2, cP2, sY2, cY2;
-    sincos(roll * 0.5, &sR2, &cR2);
-    sincos(pitch * 0.5, &sP2, &cP2);
-    sincos(yaw * 0.5, &sY2, &cY2);
+    sR2 = sin(roll * 0.5);
+    cR2 = cos(roll * 0.5);
+    sP2 = sin(pitch * 0.5);
+    cP2 = cos(pitch * 0.5);
+    sY2 = sin(yaw * 0.5);
+    cY2 = cos(yaw * 0.5);
 
     // Rz*Ry*Rx for 2012 firmware:
     w = cP2 * cR2 * cY2 + sP2 * sR2 * sY2;
