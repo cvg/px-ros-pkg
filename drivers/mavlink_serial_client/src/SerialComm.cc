@@ -4,7 +4,7 @@
 // ROS includes
 #include <px_comm/Mavlink.h>
 #include <px_comm/OpticalFlow.h>
-#include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <sensor_msgs/image_encodings.h>
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/Imu.h>
@@ -91,7 +91,7 @@ SerialComm::open(const std::string& portStr, int baudrate)
     // AscTec-specific
     m_imuPub = m_nh.advertise<sensor_msgs::Imu>("imu", 10);
     m_magPub = m_nh.advertise<sensor_msgs::MagneticField>("mag", 10);
-    m_viconPub = m_nh.advertise<geometry_msgs::PoseStamped>("vicon", 10);
+    m_viconPub = m_nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("vicon", 10);
 
     ros::NodeHandle raw_nh(m_nh, "raw");
     m_imuRawPub = raw_nh.advertise<sensor_msgs::Imu>("imu", 10);
@@ -392,7 +392,7 @@ SerialComm::readCallback(const boost::system::error_code& error, size_t bytesTra
 
                 mavlink_vicon_position_estimate_t pos;
                 mavlink_msg_vicon_position_estimate_decode(&message, &pos);
-                geometry_msgs::PoseStamped poseStampedMsg;
+                geometry_msgs::PoseWithCovarianceStamped poseStampedMsg;
 
                 poseStampedMsg.header.stamp = ros::Time().fromNSec(pos.usec * 1000);
                 poseStampedMsg.header.frame_id = m_frameId;
@@ -403,14 +403,24 @@ SerialComm::readCallback(const boost::system::error_code& error, size_t bytesTra
                     Eigen::AngleAxisd(pos.roll, Eigen::Vector3d::UnitX());
                 Eigen::Quaterniond q(R);
 
-                poseStampedMsg.pose.orientation.x = q.x();
-                poseStampedMsg.pose.orientation.y = q.y();
-                poseStampedMsg.pose.orientation.z = q.z();
-                poseStampedMsg.pose.orientation.w = q.w();
+                poseStampedMsg.pose.pose.orientation.x = q.x();
+                poseStampedMsg.pose.pose.orientation.y = q.y();
+                poseStampedMsg.pose.pose.orientation.z = q.z();
+                poseStampedMsg.pose.pose.orientation.w = q.w();
 
-                poseStampedMsg.pose.position.x = pos.x;
-                poseStampedMsg.pose.position.y = pos.y;
-                poseStampedMsg.pose.position.z = pos.z;
+                poseStampedMsg.pose.pose.position.x = pos.x;
+                poseStampedMsg.pose.pose.position.y = pos.y;
+                poseStampedMsg.pose.pose.position.z = pos.z;
+
+                // set covariance to 0.05m std dev
+                poseStampedMsg.pose.covariance[0] = 0.05f * 0.05f;
+                poseStampedMsg.pose.covariance[7] = 0.05f * 0.05f;
+                poseStampedMsg.pose.covariance[14] = 0.05f * 0.05f;
+
+                // set covariance to 0.01 rad
+                poseStampedMsg.pose.covariance[21] = 0.01f * 0.01f;
+                poseStampedMsg.pose.covariance[28] = 0.01f * 0.01f;
+                poseStampedMsg.pose.covariance[35] = 0.01f * 0.01f;
 
                 m_viconPub.publish(poseStampedMsg);
 
