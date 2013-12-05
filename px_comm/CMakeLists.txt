@@ -18,13 +18,14 @@ generate_messages(
   std_msgs
 )
 
-catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES px_comm_dds
-  CATKIN_DEPENDS message_runtime
-)
-
+# if RTI DDS is found
 if(DEFINED ENV{NDDSHOME})
+  catkin_package(
+    INCLUDE_DIRS include
+    LIBRARIES px_comm_dds
+    CATKIN_DEPENDS message_runtime
+  )
+
   set(NDDSHOME $ENV{NDDSHOME})
 
   include_directories(
@@ -40,5 +41,10 @@ if(DEFINED ENV{NDDSHOME})
     dds_msg/DDSImage.cxx
     dds_msg/DDSImagePlugin.cxx
     dds_msg/DDSImageSupport.cxx
+  )
+else()
+  catkin_package(
+    INCLUDE_DIRS include
+    CATKIN_DEPENDS message_runtime
   )
 endif()
