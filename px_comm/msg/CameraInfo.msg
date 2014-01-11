@@ -39,3 +39,6 @@ float64[] P
 # Other parameters which are not defined by either the distortion or
 # projection model.
 float64[] M
+
+# Pose of camera with respect to a specific reference frame.
+geometry_msgs/Pose pose
