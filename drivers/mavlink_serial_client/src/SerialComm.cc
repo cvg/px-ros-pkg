@@ -394,7 +394,7 @@ SerialComm::readCallback(const boost::system::error_code& error, size_t bytesTra
                 mavlink_msg_vicon_position_estimate_decode(&message, &pos);
                 geometry_msgs::PoseWithCovarianceStamped poseStampedMsg;
 
-                poseStampedMsg.header.stamp = ros::Time().fromNSec(pos.usec * 1000);
+                poseStampedMsg.header.stamp = ros::Time::now();
                 poseStampedMsg.header.frame_id = m_frameId;
 
                 Eigen::Matrix3d R;
