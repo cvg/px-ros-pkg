@@ -4,36 +4,52 @@
 #include "string.h"
 #include "checksum.h"
 #include "mavlink_types.h"
+#include "mavlink_conversions.h"
 
 #ifndef MAVLINK_HELPER
 #define MAVLINK_HELPER
 #endif
 
 /*
-  internal function to give access to the channel status for each channel
+ * Internal function to give access to the channel status for each channel
  */
+#ifndef MAVLINK_GET_CHANNEL_STATUS
 MAVLINK_HELPER mavlink_status_t* mavlink_get_channel_status(uint8_t chan)
 {
+#if MAVLINK_EXTERNAL_RX_STATUS
+	// No m_mavlink_status array defined in function,
+	// has to be defined externally
+#else
 	static mavlink_status_t m_mavlink_status[MAVLINK_COMM_NUM_BUFFERS];
+#endif
 	return &m_mavlink_status[chan];
 }
+#endif
 
 /*
- internal function to give access to the channel buffer for each channel
+ * Internal function to give access to the channel buffer for each channel
  */
+#ifndef MAVLINK_GET_CHANNEL_BUFFER
 MAVLINK_HELPER mavlink_message_t* mavlink_get_channel_buffer(uint8_t chan)
 {
 	
 #if MAVLINK_EXTERNAL_RX_BUFFER
-	// No m_mavlink_message array defined in function,
+	// No m_mavlink_buffer array defined in function,
 	// has to be defined externally
-#ifndef m_mavlink_message
-#error ERROR: IF #define MAVLINK_EXTERNAL_RX_BUFFER IS SET, THE BUFFER HAS TO BE ALLOCATED OUTSIDE OF THIS FUNCTION (mavlink_message_t m_mavlink_buffer[MAVLINK_COMM_NUM_BUFFERS];)
-#endif
 #else
 	static mavlink_message_t m_mavlink_buffer[MAVLINK_COMM_NUM_BUFFERS];
 #endif
 	return &m_mavlink_buffer[chan];
+}
+#endif
+
+/**
+ * @brief Reset the status of a channel.
+ */
+MAVLINK_HELPER void mavlink_reset_channel_status(uint8_t chan)
+{
+	mavlink_status_t *status = mavlink_get_channel_status(chan);
+	status->parse_state = MAVLINK_PARSE_STATE_IDLE;
 }
 
 /**
@@ -537,7 +553,7 @@ MAVLINK_HELPER void _mavlink_send_uart(mavlink_channel_t chan, const char *buf, 
 #ifdef MAVLINK_SEND_UART_BYTES
 	/* this is the more efficient approach, if the platform
 	   defines it */
-	MAVLINK_SEND_UART_BYTES(chan, (uint8_t *)buf, len);
+	MAVLINK_SEND_UART_BYTES(chan, (const uint8_t *)buf, len);
 #else
 	/* fallback to one byte at a time */
 	uint16_t i;
