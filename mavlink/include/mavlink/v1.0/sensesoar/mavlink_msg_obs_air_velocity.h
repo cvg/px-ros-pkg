@@ -4,13 +4,22 @@
 
 typedef struct __mavlink_obs_air_velocity_t
 {
- float magnitude; ///< Air speed
- float aoa; ///< angle of attack
- float slip; ///< slip angle
+ float magnitude; ///< 
+                
+            
+ float aoa; ///< 
+                
+            
+ float slip; ///< 
+                
+            
 } mavlink_obs_air_velocity_t;
 
 #define MAVLINK_MSG_ID_OBS_AIR_VELOCITY_LEN 12
 #define MAVLINK_MSG_ID_178_LEN 12
+
+#define MAVLINK_MSG_ID_OBS_AIR_VELOCITY_CRC 32
+#define MAVLINK_MSG_ID_178_CRC 32
 
 
 
@@ -30,43 +39,59 @@ typedef struct __mavlink_obs_air_velocity_t
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param magnitude Air speed
- * @param aoa angle of attack
- * @param slip slip angle
+ * @param magnitude 
+                
+            
+ * @param aoa 
+                
+            
+ * @param slip 
+                
+            
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_obs_air_velocity_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
 						       float magnitude, float aoa, float slip)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[12];
+	char buf[MAVLINK_MSG_ID_OBS_AIR_VELOCITY_LEN];
 	_mav_put_float(buf, 0, magnitude);
 	_mav_put_float(buf, 4, aoa);
 	_mav_put_float(buf, 8, slip);
 
-        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, 12);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_OBS_AIR_VELOCITY_LEN);
 #else
 	mavlink_obs_air_velocity_t packet;
 	packet.magnitude = magnitude;
 	packet.aoa = aoa;
 	packet.slip = slip;
 
-        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, 12);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_OBS_AIR_VELOCITY_LEN);
 #endif
 
 	msg->msgid = MAVLINK_MSG_ID_OBS_AIR_VELOCITY;
-	return mavlink_finalize_message(msg, system_id, component_id, 12, 32);
+#if MAVLINK_CRC_EXTRA
+    return mavlink_finalize_message(msg, system_id, component_id, MAVLINK_MSG_ID_OBS_AIR_VELOCITY_LEN, MAVLINK_MSG_ID_OBS_AIR_VELOCITY_CRC);
+#else
+    return mavlink_finalize_message(msg, system_id, component_id, MAVLINK_MSG_ID_OBS_AIR_VELOCITY_LEN);
+#endif
 }
 
 /**
  * @brief Pack a obs_air_velocity message on a channel
  * @param system_id ID of this system
  * @param component_id ID of this component (e.g. 200 for IMU)
- * @param chan The MAVLink channel this message was sent over
+ * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
- * @param magnitude Air speed
- * @param aoa angle of attack
- * @param slip slip angle
+ * @param magnitude 
+                
+            
+ * @param aoa 
+                
+            
+ * @param slip 
+                
+            
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_obs_air_velocity_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
@@ -74,27 +99,31 @@ static inline uint16_t mavlink_msg_obs_air_velocity_pack_chan(uint8_t system_id,
 						           float magnitude,float aoa,float slip)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[12];
+	char buf[MAVLINK_MSG_ID_OBS_AIR_VELOCITY_LEN];
 	_mav_put_float(buf, 0, magnitude);
 	_mav_put_float(buf, 4, aoa);
 	_mav_put_float(buf, 8, slip);
 
-        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, 12);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_OBS_AIR_VELOCITY_LEN);
 #else
 	mavlink_obs_air_velocity_t packet;
 	packet.magnitude = magnitude;
 	packet.aoa = aoa;
 	packet.slip = slip;
 
-        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, 12);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_OBS_AIR_VELOCITY_LEN);
 #endif
 
 	msg->msgid = MAVLINK_MSG_ID_OBS_AIR_VELOCITY;
-	return mavlink_finalize_message_chan(msg, system_id, component_id, chan, 12, 32);
+#if MAVLINK_CRC_EXTRA
+    return mavlink_finalize_message_chan(msg, system_id, component_id, chan, MAVLINK_MSG_ID_OBS_AIR_VELOCITY_LEN, MAVLINK_MSG_ID_OBS_AIR_VELOCITY_CRC);
+#else
+    return mavlink_finalize_message_chan(msg, system_id, component_id, chan, MAVLINK_MSG_ID_OBS_AIR_VELOCITY_LEN);
+#endif
 }
 
 /**
- * @brief Encode a obs_air_velocity struct into a message
+ * @brief Encode a obs_air_velocity struct
  *
  * @param system_id ID of this system
  * @param component_id ID of this component (e.g. 200 for IMU)
@@ -107,31 +136,59 @@ static inline uint16_t mavlink_msg_obs_air_velocity_encode(uint8_t system_id, ui
 }
 
 /**
+ * @brief Encode a obs_air_velocity struct on a channel
+ *
+ * @param system_id ID of this system
+ * @param component_id ID of this component (e.g. 200 for IMU)
+ * @param chan The MAVLink channel this message will be sent over
+ * @param msg The MAVLink message to compress the data into
+ * @param obs_air_velocity C-struct to read the message contents from
+ */
+static inline uint16_t mavlink_msg_obs_air_velocity_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_obs_air_velocity_t* obs_air_velocity)
+{
+	return mavlink_msg_obs_air_velocity_pack_chan(system_id, component_id, chan, msg, obs_air_velocity->magnitude, obs_air_velocity->aoa, obs_air_velocity->slip);
+}
+
+/**
  * @brief Send a obs_air_velocity message
  * @param chan MAVLink channel to send the message
  *
- * @param magnitude Air speed
- * @param aoa angle of attack
- * @param slip slip angle
+ * @param magnitude 
+                
+            
+ * @param aoa 
+                
+            
+ * @param slip 
+                
+            
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
 static inline void mavlink_msg_obs_air_velocity_send(mavlink_channel_t chan, float magnitude, float aoa, float slip)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[12];
+	char buf[MAVLINK_MSG_ID_OBS_AIR_VELOCITY_LEN];
 	_mav_put_float(buf, 0, magnitude);
 	_mav_put_float(buf, 4, aoa);
 	_mav_put_float(buf, 8, slip);
 
-	_mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_OBS_AIR_VELOCITY, buf, 12, 32);
+#if MAVLINK_CRC_EXTRA
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_OBS_AIR_VELOCITY, buf, MAVLINK_MSG_ID_OBS_AIR_VELOCITY_LEN, MAVLINK_MSG_ID_OBS_AIR_VELOCITY_CRC);
+#else
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_OBS_AIR_VELOCITY, buf, MAVLINK_MSG_ID_OBS_AIR_VELOCITY_LEN);
+#endif
 #else
 	mavlink_obs_air_velocity_t packet;
 	packet.magnitude = magnitude;
 	packet.aoa = aoa;
 	packet.slip = slip;
 
-	_mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_OBS_AIR_VELOCITY, (const char *)&packet, 12, 32);
+#if MAVLINK_CRC_EXTRA
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_OBS_AIR_VELOCITY, (const char *)&packet, MAVLINK_MSG_ID_OBS_AIR_VELOCITY_LEN, MAVLINK_MSG_ID_OBS_AIR_VELOCITY_CRC);
+#else
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_OBS_AIR_VELOCITY, (const char *)&packet, MAVLINK_MSG_ID_OBS_AIR_VELOCITY_LEN);
+#endif
 #endif
 }
 
@@ -143,7 +200,9 @@ static inline void mavlink_msg_obs_air_velocity_send(mavlink_channel_t chan, flo
 /**
  * @brief Get field magnitude from obs_air_velocity message
  *
- * @return Air speed
+ * @return 
+                
+            
  */
 static inline float mavlink_msg_obs_air_velocity_get_magnitude(const mavlink_message_t* msg)
 {
@@ -153,7 +212,9 @@ static inline float mavlink_msg_obs_air_velocity_get_magnitude(const mavlink_mes
 /**
  * @brief Get field aoa from obs_air_velocity message
  *
- * @return angle of attack
+ * @return 
+                
+            
  */
 static inline float mavlink_msg_obs_air_velocity_get_aoa(const mavlink_message_t* msg)
 {
@@ -163,7 +224,9 @@ static inline float mavlink_msg_obs_air_velocity_get_aoa(const mavlink_message_t
 /**
  * @brief Get field slip from obs_air_velocity message
  *
- * @return slip angle
+ * @return 
+                
+            
  */
 static inline float mavlink_msg_obs_air_velocity_get_slip(const mavlink_message_t* msg)
 {
@@ -183,6 +246,6 @@ static inline void mavlink_msg_obs_air_velocity_decode(const mavlink_message_t* 
 	obs_air_velocity->aoa = mavlink_msg_obs_air_velocity_get_aoa(msg);
 	obs_air_velocity->slip = mavlink_msg_obs_air_velocity_get_slip(msg);
 #else
-	memcpy(obs_air_velocity, _MAV_PAYLOAD(msg), 12);
+	memcpy(obs_air_velocity, _MAV_PAYLOAD(msg), MAVLINK_MSG_ID_OBS_AIR_VELOCITY_LEN);
 #endif
 }
