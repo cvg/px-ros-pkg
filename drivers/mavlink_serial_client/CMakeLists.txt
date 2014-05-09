@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(mavlink_serial_client)
 
-find_package(catkin REQUIRED COMPONENTS roscpp std_msgs sensor_msgs image_transport px_comm)
+find_package(catkin REQUIRED COMPONENTS cmake_modules roscpp std_msgs sensor_msgs image_transport px_comm)
 find_package(Boost REQUIRED COMPONENTS thread system signals)
 find_package(Eigen REQUIRED)
 
