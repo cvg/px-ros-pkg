@@ -14,8 +14,6 @@
 /* Uses */
 #include "DDSImage.h"
 
-
-
 #ifdef __cplusplus
 #ifndef ndds_cpp_h
   #include "ndds/ndds_cpp.h"
@@ -26,62 +24,48 @@
 #endif
 #endif
 
-
-namespace px_comm{
         
+namespace px_comm {
+    /* ========================================================================= */
+    /**
+       Uses:     T
 
-/* ========================================================================= */
-/**
-   Uses:     T
+       Defines:  TTypeSupport, TDataWriter, TDataReader
 
-   Defines:  TTypeSupport, TDataWriter, TDataReader
+       Organized using the well-documented "Generics Pattern" for
+       implementing generics in C and C++.
+    */
 
-   Organized using the well-documented "Generics Pattern" for
-   implementing generics in C and C++.
-*/
+    #if (defined(RTI_WIN32) || defined (RTI_WINCE)) && defined(NDDS_USER_DLL_EXPORT)
+      /* If the code is building on Windows, start exporting symbols.
+       */
+    #undef NDDSUSERDllExport
+      #define NDDSUSERDllExport __declspec(dllexport)
 
-#if (defined(RTI_WIN32) || defined (RTI_WINCE)) && defined(NDDS_USER_DLL_EXPORT)
-  /* If the code is building on Windows, start exporting symbols.
-   */
-  #undef NDDSUSERDllExport
-  #define NDDSUSERDllExport __declspec(dllexport)
+    #endif
 
-#ifdef __cplusplus
-  /* If we're building on Windows, explicitly import the superclasses of
-   * the types declared below.
-   */        
-  class __declspec(dllimport) ::DDSTypeSupport;
-  class __declspec(dllimport) ::DDSDataWriter;
-  class __declspec(dllimport) ::DDSDataReader;
-#endif
+    #ifdef __cplusplus
 
-#endif
+    DDS_TYPESUPPORT_CPP(DDSImageTypeSupport, DDSImage);
 
-#ifdef __cplusplus
+    DDS_DATAWRITER_CPP(DDSImageDataWriter, DDSImage);
+    DDS_DATAREADER_CPP(DDSImageDataReader, DDSImageSeq, DDSImage);
 
-DDS_TYPESUPPORT_CPP(DDSImageTypeSupport, DDSImage);
+    #else
 
-DDS_DATAWRITER_CPP(DDSImageDataWriter, DDSImage);
-DDS_DATAREADER_CPP(DDSImageDataReader, DDSImageSeq, DDSImage);
+    DDS_TYPESUPPORT_C(DDSImageTypeSupport, DDSImage);
+    DDS_DATAWRITER_C(DDSImageDataWriter, DDSImage);
+    DDS_DATAREADER_C(DDSImageDataReader, DDSImageSeq, DDSImage);
 
+    #endif
 
-#else
-
-DDS_TYPESUPPORT_C(DDSImageTypeSupport, DDSImage);
-DDS_DATAWRITER_C(DDSImageDataWriter, DDSImage);
-DDS_DATAREADER_C(DDSImageDataReader, DDSImageSeq, DDSImage);
-
-#endif
-
-#if (defined(RTI_WIN32) || defined (RTI_WINCE)) && defined(NDDS_USER_DLL_EXPORT)
-  /* If the code is building on Windows, stop exporting symbols.
-   */
-  #undef NDDSUSERDllExport
-  #define NDDSUSERDllExport
-#endif
-
-
-} /* namespace px_comm */
-
+    #if (defined(RTI_WIN32) || defined (RTI_WINCE)) && defined(NDDS_USER_DLL_EXPORT)
+      /* If the code is building on Windows, stop exporting symbols.
+       */
+    #undef NDDSUSERDllExport
+      #define NDDSUSERDllExport
+    #endif
+} /* namespace px_comm  */
 
 #endif  /* DDSImageSupport_248003145_h */
+

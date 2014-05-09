@@ -11,136 +11,122 @@
 #include "DDSImageSupport.h"
 #include "DDSImagePlugin.h"
 
-
-
 #ifdef __cplusplus  
     #ifndef dds_c_log_impl_h              
-         #include "dds_c/dds_c_log_impl.h"                                
+        #include "dds_c/dds_c_log_impl.h"                                
     #endif        
 #endif        
 
+namespace px_comm {
 
-namespace px_comm{
+    /* ========================================================================= */
+    /**
+       <<IMPLEMENTATION>>
 
+       Defines:   TData,
+                  TDataWriter,
+                  TDataReader,
+                  TTypeSupport
 
+       Configure and implement 'DDSImage' support classes.
 
-/* ========================================================================= */
-/**
-   <<IMPLEMENTATION>>
+       Note: Only the #defined classes get defined
+    */
 
-   Defines:   TData,
-              TDataWriter,
-              TDataReader,
-              TTypeSupport
+    /* ----------------------------------------------------------------- */
+    /* DDSDataWriter
+    */
 
-   Configure and implement 'DDSImage' support classes.
+    /**
+      <<IMPLEMENTATION >>
 
-   Note: Only the #defined classes get defined
-*/
+       Defines:   TDataWriter, TData
+    */
 
-/* ----------------------------------------------------------------- */
-/* DDSDataWriter
-*/
+    /* Requires */
+    #define TTYPENAME   DDSImageTYPENAME
 
-/**
-  <<IMPLEMENTATION >>
+    /* Defines */
+    #define TDataWriter DDSImageDataWriter
+    #define TData       px_comm::DDSImage
 
-   Defines:   TDataWriter, TData
-*/
+    #ifdef __cplusplus
+    #include "dds_cpp/generic/dds_cpp_data_TDataWriter.gen"
+    #else
+    #include "dds_c/generic/dds_c_data_TDataWriter.gen"
+    #endif
 
-/* Requires */
-#define TTYPENAME   DDSImageTYPENAME
+    #undef TDataWriter
+    #undef TData
 
-/* Defines */
-#define TDataWriter DDSImageDataWriter
-#define TData       ::px_comm::DDSImage
+    #undef TTYPENAME
 
+    /* ----------------------------------------------------------------- */
+    /* DDSDataReader
+    */
 
-#ifdef __cplusplus
-#include "dds_cpp/generic/dds_cpp_data_TDataWriter.gen"
-#else
-#include "dds_c/generic/dds_c_data_TDataWriter.gen"
-#endif
+    /**
+      <<IMPLEMENTATION >>
 
+       Defines:   TDataReader, TDataSeq, TData
+    */
 
-#undef TDataWriter
-#undef TData
+    /* Requires */
+    #define TTYPENAME   DDSImageTYPENAME
 
-#undef TTYPENAME
+    /* Defines */
+    #define TDataReader DDSImageDataReader
+    #define TDataSeq    DDSImageSeq
+    #define TData       px_comm::DDSImage
 
-/* ----------------------------------------------------------------- */
-/* DDSDataReader
-*/
+    #ifdef __cplusplus
+    #include "dds_cpp/generic/dds_cpp_data_TDataReader.gen"
+    #else
+    #include "dds_c/generic/dds_c_data_TDataReader.gen"
+    #endif
 
-/**
-  <<IMPLEMENTATION >>
+    #undef TDataReader
+    #undef TDataSeq
+    #undef TData
 
-   Defines:   TDataReader, TDataSeq, TData
-*/
+    #undef TTYPENAME
 
-/* Requires */
-#define TTYPENAME   DDSImageTYPENAME
+    /* ----------------------------------------------------------------- */
+    /* TypeSupport
 
-/* Defines */
-#define TDataReader DDSImageDataReader
-#define TDataSeq    DDSImageSeq
-#define TData       ::px_comm::DDSImage
+      <<IMPLEMENTATION >>
 
+       Requires:  TTYPENAME,
+                  TPlugin_new
+                  TPlugin_delete
+       Defines:   TTypeSupport, TData, TDataReader, TDataWriter
+    */
 
-#ifdef __cplusplus
-#include "dds_cpp/generic/dds_cpp_data_TDataReader.gen"
-#else
-#include "dds_c/generic/dds_c_data_TDataReader.gen"
-#endif
+    /* Requires */
+    #define TTYPENAME    DDSImageTYPENAME
+    #define TPlugin_new  px_comm::DDSImagePlugin_new
+    #define TPlugin_delete  px_comm::DDSImagePlugin_delete
 
+    /* Defines */
+    #define TTypeSupport DDSImageTypeSupport
+    #define TData        px_comm::DDSImage
+    #define TDataReader  DDSImageDataReader
+    #define TDataWriter  DDSImageDataWriter
+    #ifdef __cplusplus
 
-#undef TDataReader
-#undef TDataSeq
-#undef TData
+    #include "dds_cpp/generic/dds_cpp_data_TTypeSupport.gen"
 
-#undef TTYPENAME
+    #else
+    #include "dds_c/generic/dds_c_data_TTypeSupport.gen"
+    #endif
+    #undef TTypeSupport
+    #undef TData
+    #undef TDataReader
+    #undef TDataWriter
 
-/* ----------------------------------------------------------------- */
-/* TypeSupport
+    #undef TTYPENAME
+    #undef TPlugin_new
+    #undef TPlugin_delete
 
-  <<IMPLEMENTATION >>
+} /* namespace px_comm  */
 
-   Requires:  TTYPENAME,
-              TPlugin_new
-              TPlugin_delete
-   Defines:   TTypeSupport, TData, TDataReader, TDataWriter
-*/
-
-/* Requires */
-#define TTYPENAME    DDSImageTYPENAME
-#define TPlugin_new  ::px_comm::DDSImagePlugin_new
-#define TPlugin_delete  ::px_comm::DDSImagePlugin_delete
-
-/* Defines */
-#define TTypeSupport DDSImageTypeSupport
-#define TData        ::px_comm::DDSImage
-#define TDataReader  DDSImageDataReader
-#define TDataWriter  DDSImageDataWriter
-#ifdef __cplusplus
-
-
-
-#include "dds_cpp/generic/dds_cpp_data_TTypeSupport.gen"
-
-
-
-#else
-#include "dds_c/generic/dds_c_data_TTypeSupport.gen"
-#endif
-#undef TTypeSupport
-#undef TData
-#undef TDataReader
-#undef TDataWriter
-
-#undef TTYPENAME
-#undef TPlugin_new
-#undef TPlugin_delete
-
-
-
-} /* namespace px_comm */
