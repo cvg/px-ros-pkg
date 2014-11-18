@@ -25,6 +25,9 @@ string camera_model
 # The name of the camera.
 string camera_name
 
+# The type of the camera.
+string camera_type
+
 # The image dimensions with which the camera was calibrated. Normally
 # this will be the full camera resolution in pixels.
 uint32 image_width
